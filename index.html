@@ -1,38 +1,37 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Lab Fitness | Login</title>
+<!-- ROLE SELECT -->
+<div class="flex gap-4 mb-4">
+  <label class="flex items-center gap-2">
+    <input type="radio" name="role" value="member" checked>
+    Member
+  </label>
+  <label class="flex items-center gap-2">
+    <input type="radio" name="role" value="admin">
+    Admin
+  </label>
+</div>
 
-  <!-- Tailwind CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-</head>
+<!-- EMAIL -->
+<input
+  id="email"
+  type="email"
+  placeholder="Email"
+  class="w-full border p-2 rounded mb-3"
+/>
 
-<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+<!-- CODE / PASSWORD -->
+<input
+  id="secret"
+  type="password"
+  placeholder="Kode Member"
+  class="w-full border p-2 rounded mb-3"
+/>
 
-  <div class="bg-white p-6 rounded-2xl shadow w-full max-w-sm">
-    <h1 class="text-2xl font-bold mb-4 text-center">Lab Fitness</h1>
+<!-- ERROR -->
+<p id="error" class="text-red-600 text-sm hidden"></p>
 
-    <input id="email" type="email" placeholder="Email"
-      class="w-full mb-3 p-3 border rounded-lg"/>
-
-    <input id="code" type="password" placeholder="Kode Unik"
-      class="w-full mb-4 p-3 border rounded-lg"/>
-
-    <button onclick="loginMember()"
-      class="w-full bg-black text-white p-3 rounded-lg">
-      Login
-    </button>
-    <button onclick="loginAdmin()"
-  class="w-full mt-2 border border-black text-black p-3 rounded-lg">
-  Login sebagai Admin
+<!-- BUTTON -->
+<button
+  onclick="submitLogin()"
+  class="w-full bg-black text-white py-2 rounded">
+  Login
 </button>
-
-    <p id="error" class="text-red-500 text-sm mt-3 hidden"></p>
-  </div>
-
-<script src="assets/js/app.js"></script>
-</body>
-</html>
-

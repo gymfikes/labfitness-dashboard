@@ -21,24 +21,6 @@ function logout() {
 }
 
 /*************************************************
- * SIDEBAR TOGGLE (MOBILE)
- *************************************************/
-function toggleMenu() {
-  const sidebar = document.getElementById("sidebar");
-  const overlay = document.getElementById("overlay");
-  if (!sidebar || !overlay) return;
-
-  const isHidden = sidebar.classList.contains("translate-x-full");
-  if (isHidden) {
-    sidebar.classList.remove("translate-x-full");
-    overlay.classList.remove("hidden");
-  } else {
-    sidebar.classList.add("translate-x-full");
-    overlay.classList.add("hidden");
-  }
-}
-
-/*************************************************
  * API HELPER
  *************************************************/
 function apiFetch(params) {
@@ -72,30 +54,27 @@ function loadMemberDashboard() {
 }
 
 /*************************************************
- * RENDER MEMBER DASHBOARD
+ * RENDER UI (desktop + mobile)
  *************************************************/
 function renderMember(data) {
-  // Info utama
-  setText("name", data.full_name);
-  setText("code", user.member_code);
-  setText("days", `${data.days_remaining ?? "-"} hari`);
-  setText("level", data.membership_type || "-");
+  // Ambil semua ID desktop dan mobile
+  const elements = [
+    { desktop: 'name', mobile: 'nameMobile', value: data.full_name },
+    { desktop: 'status', mobile: 'statusMobile', value: data.status_keaktifan },
+    { desktop: 'badge', mobile: 'badgeMobile', value: '' }, // nanti set by badge logic
+    { desktop: 'code', mobile: 'codeMobile', value: user.member_code },
+    { desktop: 'days', mobile: 'daysMobile', value: `${data.days_remaining ?? "-"} hari` },
+    { desktop: 'level', mobile: 'levelMobile', value: data.membership_type || "-" },
+    { desktop: 'attendance', mobile: 'attendanceMobile', value: data.attendance_30d ?? "0" },
+    { desktop: 'program', mobile: 'programMobile', value: data.program || "-" },
+    { desktop: 'programDate', mobile: 'programDateMobile', value: data.program_sent_at ? `Dikirim: ${data.program_sent_at}` : "" }
+  ];
 
-  // Attendance
-  setText("attendance", data.attendance_30d ?? "0");      // 30 hari terakhir
-  setText("attendanceTotal", data.attendance_total ?? "0"); // total dari awal
+  elements.forEach(el => {
+    setText(el.desktop, el.value);
+    setText(el.mobile, el.value);
+  });
 
-  // Status keaktifan
-  setText("status", data.status_keaktifan || "-");
-
-  // Program latihan
-  setText("program", data.program || "-");
-  setText(
-    "programDate",
-    data.program_sent_at ? `Dikirim: ${data.program_sent_at}` : ""
-  );
-
-  // Badge
   setBadge(Number(data.attendance_30d || 0));
 }
 
@@ -111,19 +90,22 @@ function setText(id, value) {
  * BADGE LOGIC
  *************************************************/
 function setBadge(attendance) {
-  const badge = document.getElementById("badge");
-  if (!badge) return;
+  const badgeText = attendance >= 20 ? "🔥 Consistent" :
+                    attendance >= 10 ? "💪 Active" :
+                    "🆕 New Member";
 
-  if (attendance >= 20) {
-    badge.innerText = "🔥 Consistent";
-    badge.className = "text-sm text-red-500 font-semibold";
-  } else if (attendance >= 10) {
-    badge.innerText = "💪 Active";
-    badge.className = "text-sm text-green-600 font-semibold";
-  } else {
-    badge.innerText = "🆕 New Member";
-    badge.className = "text-sm text-gray-500 font-semibold";
-  }
+  const badgeClass = attendance >= 20 ? "text-sm text-red-500 font-semibold" :
+                     attendance >= 10 ? "text-sm text-green-600 font-semibold" :
+                     "text-sm text-gray-500 font-semibold";
+
+  // Update desktop & mobile
+  ['badge', 'badgeMobile'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.innerText = badgeText;
+      el.className = badgeClass;
+    }
+  });
 }
 
 /*************************************************
@@ -131,6 +113,5 @@ function setBadge(attendance) {
  *************************************************/
 function showError(message) {
   console.error(message);
-  alert(message); // bisa diganti toast/modal
+  alert(message); // bisa diganti toast/modal nanti
 }
-

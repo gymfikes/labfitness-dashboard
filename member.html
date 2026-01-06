@@ -13,7 +13,7 @@
 <div class="flex min-h-screen">
 
   <!-- SIDEBAR -->
-  <aside id="sidebar" class="hidden md:flex w-64 bg-black text-white flex-col p-6 fixed md:static h-full z-50">
+  <aside id="sidebar" class="fixed inset-y-0 left-0 w-64 bg-black text-white flex-col p-6 transform -translate-x-full md:translate-x-0 transition-transform z-50">
     <h1 class="text-2xl font-bold mb-8">Lab Fitness</h1>
 
     <nav class="space-y-2 text-sm">
@@ -54,7 +54,7 @@
         />
         <div>
           <h2 id="name" class="text-xl font-bold text-gray-900">-</h2>
-          <p id="status" class="text-sm font-semibold text-gray-500">-</p>
+          <p id="status" class="text-sm font-semibold text-gray-500 mt-1">-</p>
           <p id="badge" class="text-sm font-semibold text-gray-500 mt-1">-</p>
         </div>
       </section>

@@ -28,41 +28,46 @@ function apiFetch(params) {
     key: API_KEY,
     ...params
   }).toString();
-
-  return fetch(`${API_URL}?${query}`)
-    .then(res => res.json());
+  return fetch(`${API_URL}?${query}`).then(res => res.json());
 }
 
 /*************************************************
  * LOAD MEMBER DASHBOARD
  *************************************************/
 document.addEventListener("DOMContentLoaded", loadMemberDashboard);
-
 function loadMemberDashboard() {
   apiFetch({
     action: "memberDashboard",
     code: user.member_code
   })
-    .then(data => {
-      if (data.status !== "success") {
-        showError("Gagal memuat data member");
-        return;
-      }
-      renderMember(data);
-    })
-    .catch(() => showError("Tidak dapat terhubung ke server"));
+  .then(data => {
+    if (data.status !== "success") return showError("Gagal memuat data member");
+    renderMember(data);
+  })
+  .catch(() => showError("Tidak dapat terhubung ke server"));
 }
 
 /*************************************************
- * RENDER UI
+ * RENDER MEMBER DASHBOARD
  *************************************************/
 function renderMember(data) {
+  // STATUS KEAKTIFAN
+  const statusEl = document.getElementById("status");
+  if (statusEl) {
+    if (data.status_keaktifan === "Aktif") {
+      statusEl.innerText = "Aktif";
+      statusEl.className = "text-sm font-semibold text-green-600 mb-1";
+    } else {
+      statusEl.innerText = "Tidak Aktif";
+      statusEl.className = "text-sm font-semibold text-red-500 mb-1";
+    }
+  }
+
   setText("name", data.full_name);
   setText("code", user.member_code);
   setText("days", `${data.days_remaining ?? "-"} hari`);
   setText("level", data.membership_type || "-");
   setText("attendance", data.attendance_30d ?? "0");
-  setText("attendanceTotal", data.attendance_total ?? "0"); // tambahan
   setText("program", data.program || "-");
   setText("programDate", data.program_sent_at ? `Dikirim: ${data.program_sent_at}` : "");
 
@@ -101,5 +106,5 @@ function setBadge(attendance) {
  *************************************************/
 function showError(message) {
   console.error(message);
-  alert(message); // bisa diganti toast/modal nanti
+  alert(message); // bisa diganti toast/modal
 }

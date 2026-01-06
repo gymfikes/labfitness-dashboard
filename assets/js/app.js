@@ -14,7 +14,10 @@ function apiFetch(params) {
   }).toString();
 
   return fetch(`${API_URL}?${query}`)
-    .then(res => res.json());
+    .then(res => {
+      if (!res.ok) throw new Error("Network error");
+      return res.json();
+    });
 }
 
 /*************************************************
@@ -53,4 +56,42 @@ function loginMember() {
  * ADMIN LOGIN
  *************************************************/
 function loginAdmin() {
-  con
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("code").value.trim();
+
+  if (!email || !password) {
+    showError("Email dan password wajib diisi");
+    return;
+  }
+
+  apiFetch({
+    action: "adminLogin",
+    email,
+    password
+  })
+    .then(data => {
+      if (data.status === "success") {
+        localStorage.setItem("user", JSON.stringify({
+          role: "admin",
+          email: data.admin.email
+        }));
+        window.location.href = "admin.html";
+      } else {
+        showError(data.message || "Login admin gagal");
+      }
+    })
+    .catch(() => showError("Gagal terhubung ke server"));
+}
+
+/*************************************************
+ * ERROR HANDLER
+ *************************************************/
+function showError(message) {
+  const el = document.getElementById("error");
+  if (!el) {
+    alert(message);
+    return;
+  }
+  el.innerText = message;
+  el.classList.remove("hidden");
+}

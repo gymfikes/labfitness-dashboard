@@ -22,53 +22,63 @@ function logout() {
 }
 
 /*************************************************
+ * API HELPER
+ *************************************************/
+function apiFetch(params) {
+  const query = new URLSearchParams({
+    key: API_KEY,
+    ...params
+  }).toString();
+
+  return fetch(`${API_URL}?${query}`)
+    .then(res => res.json());
+}
+
+/*************************************************
  * LOAD MEMBER DASHBOARD
  *************************************************/
-loadMemberDashboard();
+document.addEventListener("DOMContentLoaded", loadMemberDashboard);
 
 function loadMemberDashboard() {
-  const url =
-    `${API_URL}` +
-    `?action=memberDashboard` +
-    `&code=${encodeURIComponent(user.member_code)}` +
-    `&key=${API_KEY}`;
-
-  fetch(url)
-    .then(res => res.json())
+  apiFetch({
+    action: "memberDashboard",
+    code: user.member_code
+  })
     .then(data => {
       if (data.status !== "success") {
         showError("Gagal memuat data member");
         return;
       }
-
       renderMember(data);
     })
-    .catch(() => {
-      showError("Tidak dapat terhubung ke server");
-    });
+    .catch(() => showError("Tidak dapat terhubung ke server"));
 }
 
 /*************************************************
  * RENDER UI
  *************************************************/
 function renderMember(data) {
-  document.getElementById("name").innerText = data.full_name || "-";
-  document.getElementById("code").innerText = user.member_code;
-  document.getElementById("days").innerText =
-    (data.days_to_expired ?? "-") + " hari";
-  document.getElementById("level").innerText =
-    data.training_level || "-";
-  document.getElementById("attendance").innerText =
-    data.attendance_30d ?? "0";
-  document.getElementById("program").innerText =
-    data.program || "-";
+  setText("name", data.full_name);
+  setText("code", user.member_code);
+  setText("days", `${data.days_remaining ?? "-"} hari`);
+  setText("level", data.membership_type || "-");
+  setText("attendance", data.attendance_30d ?? "0");
+  setText("program", data.program || "-");
 
-  document.getElementById("programDate").innerText =
-    data.program_sent_at
-      ? "Dikirim: " + data.program_sent_at
-      : "";
+  setText(
+    "programDate",
+    data.program_sent_at ? `Dikirim: ${data.program_sent_at}` : ""
+  );
 
   setBadge(Number(data.attendance_30d || 0));
+}
+
+/*************************************************
+ * SAFE DOM SETTER
+ *************************************************/
+function setText(id, value) {
+  const el = document.getElementById(id);
+  if (el) el.innerText = value ?? "-";
 }
 
 /*************************************************
@@ -76,6 +86,7 @@ function renderMember(data) {
  *************************************************/
 function setBadge(attendance) {
   const badge = document.getElementById("badge");
+  if (!badge) return;
 
   if (attendance >= 20) {
     badge.innerText = "🔥 Consistent";
@@ -93,5 +104,6 @@ function setBadge(attendance) {
  * ERROR HANDLER
  *************************************************/
 function showError(message) {
-  alert(message);
+  console.error(message);
+  alert(message); // nanti bisa diganti toast/modal
 }

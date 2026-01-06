@@ -4,7 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Member Dashboard | Lab Fitness</title>
-
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
@@ -17,18 +16,10 @@
     <h1 class="text-2xl font-bold mb-8">Lab Fitness</h1>
 
     <nav class="space-y-2 text-sm">
-      <a href="member.html" class="block px-4 py-2 rounded bg-gray-800">
-        Dashboard
-      </a>
-      <a href="profile.html" class="block px-4 py-2 rounded hover:bg-gray-800">
-        Profile
-      </a>
-      <a href="program.html" class="block px-4 py-2 rounded hover:bg-gray-800">
-        Program
-      </a>
-      <a href="contact.html" class="block px-4 py-2 rounded hover:bg-gray-800">
-        Contact
-      </a>
+      <a href="member.html" class="block px-4 py-2 rounded bg-gray-800">Dashboard</a>
+      <a href="profile.html" class="block px-4 py-2 rounded hover:bg-gray-800">Profile</a>
+      <a href="program.html" class="block px-4 py-2 rounded hover:bg-gray-800">Program</a>
+      <a href="contact.html" class="block px-4 py-2 rounded hover:bg-gray-800">Contact</a>
     </nav>
 
     <button onclick="logout()"
@@ -59,10 +50,12 @@
         />
 
         <div>
-          <!-- STATUS KEAKTIFAN -->
-          <p id="status" class="text-sm font-semibold mb-1 text-gray-500">-</p>
+          <!-- Nama Member -->
           <h2 id="name" class="text-xl font-bold text-gray-900">-</h2>
-          <p id="badge" class="text-sm font-semibold text-gray-500">-</p>
+          <!-- Status Keaktifan -->
+          <p id="statusActive" class="text-sm font-semibold text-gray-600">-</p>
+          <!-- Badge Attendance -->
+          <p id="badge" class="text-sm font-semibold text-gray-500 mt-1">-</p>
         </div>
       </section>
 
@@ -84,8 +77,13 @@
         </div>
 
         <div class="bg-white rounded-xl p-4 shadow">
-          <p class="text-xs text-gray-500 mb-1">Kehadiran (30 hari)</p>
+          <p class="text-xs text-gray-500 mb-1">Kehadiran 30 Hari</p>
           <p id="attendance" class="font-semibold text-gray-900">-</p>
+        </div>
+
+        <div class="bg-white rounded-xl p-4 shadow">
+          <p class="text-xs text-gray-500 mb-1">Total Kehadiran</p>
+          <p id="attendanceTotal" class="font-semibold text-gray-900">-</p>
         </div>
       </section>
 

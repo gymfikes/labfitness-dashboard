@@ -8,7 +8,6 @@ const API_KEY = "LABFITNESS_2026_SECURE";
  * AUTH GUARD
  *************************************************/
 const user = JSON.parse(localStorage.getItem("user"));
-
 if (!user || user.role !== "member" || !user.member_code) {
   window.location.href = "index.html";
 }
@@ -63,12 +62,9 @@ function renderMember(data) {
   setText("days", `${data.days_remaining ?? "-"} hari`);
   setText("level", data.membership_type || "-");
   setText("attendance", data.attendance_30d ?? "0");
+  setText("attendanceTotal", data.attendance_total ?? "0"); // tambahan
   setText("program", data.program || "-");
-
-  setText(
-    "programDate",
-    data.program_sent_at ? `Dikirim: ${data.program_sent_at}` : ""
-  );
+  setText("programDate", data.program_sent_at ? `Dikirim: ${data.program_sent_at}` : "");
 
   setBadge(Number(data.attendance_30d || 0));
 }
@@ -105,5 +101,5 @@ function setBadge(attendance) {
  *************************************************/
 function showError(message) {
   console.error(message);
-  alert(message); // nanti bisa diganti toast/modal
+  alert(message); // bisa diganti toast/modal nanti
 }

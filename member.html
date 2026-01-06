@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Member Dashboard | Lab Fitness</title>
+
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
@@ -11,8 +12,8 @@
 
 <div class="flex min-h-screen">
 
-  <!-- SIDEBAR (DESKTOP) -->
-  <aside class="hidden md:flex w-64 bg-black text-white flex-col p-6">
+  <!-- SIDEBAR -->
+  <aside id="sidebar" class="hidden md:flex w-64 bg-black text-white flex-col p-6 fixed md:static h-full z-50">
     <h1 class="text-2xl font-bold mb-8">Lab Fitness</h1>
 
     <nav class="space-y-2 text-sm">
@@ -28,13 +29,16 @@
     </button>
   </aside>
 
-  <!-- MAIN CONTENT -->
-  <div class="flex-1 flex flex-col">
+  <!-- OVERLAY MOBILE -->
+  <div id="overlay" class="fixed inset-0 bg-black bg-opacity-30 hidden z-40" onclick="toggleMenu()"></div>
 
-    <!-- TOPBAR (MOBILE) -->
+  <!-- MAIN CONTENT -->
+  <div class="flex-1 flex flex-col md:ml-64">
+
+    <!-- TOPBAR MOBILE -->
     <header class="md:hidden bg-black text-white p-4 flex justify-between items-center">
       <span class="font-bold">Lab Fitness</span>
-      <button onclick="toggleMenu()" class="text-xl">☰</button>
+      <button onclick="toggleMenu()" class="text-2xl">☰</button>
     </header>
 
     <!-- PAGE CONTENT -->
@@ -48,13 +52,9 @@
           alt="Foto Member"
           class="w-20 h-20 rounded-full object-cover border"
         />
-
         <div>
-          <!-- Nama Member -->
           <h2 id="name" class="text-xl font-bold text-gray-900">-</h2>
-          <!-- Status Keaktifan -->
-          <p id="statusActive" class="text-sm font-semibold text-gray-600">-</p>
-          <!-- Badge Attendance -->
+          <p id="status" class="text-sm font-semibold text-gray-500">-</p>
           <p id="badge" class="text-sm font-semibold text-gray-500 mt-1">-</p>
         </div>
       </section>
@@ -65,25 +65,17 @@
           <p class="text-xs text-gray-500 mb-1">Kode Unik</p>
           <p id="code" class="font-semibold text-gray-900">-</p>
         </div>
-
         <div class="bg-white rounded-xl p-4 shadow">
           <p class="text-xs text-gray-500 mb-1">Sisa Hari</p>
           <p id="days" class="font-semibold text-gray-900">-</p>
         </div>
-
         <div class="bg-white rounded-xl p-4 shadow">
           <p class="text-xs text-gray-500 mb-1">Tipe Membership</p>
           <p id="level" class="font-semibold text-gray-900">-</p>
         </div>
-
         <div class="bg-white rounded-xl p-4 shadow">
-          <p class="text-xs text-gray-500 mb-1">Kehadiran 30 Hari</p>
+          <p class="text-xs text-gray-500 mb-1">Kehadiran (30 hari)</p>
           <p id="attendance" class="font-semibold text-gray-900">-</p>
-        </div>
-
-        <div class="bg-white rounded-xl p-4 shadow">
-          <p class="text-xs text-gray-500 mb-1">Total Kehadiran</p>
-          <p id="attendanceTotal" class="font-semibold text-gray-900">-</p>
         </div>
       </section>
 

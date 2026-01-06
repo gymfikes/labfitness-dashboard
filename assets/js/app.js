@@ -1,97 +1,79 @@
-/*************************************************
- * CONFIG
- *************************************************/
-const API_URL = "https://script.google.com/macros/s/AKfycbzVS9DZ6SdoZ5o5-ODUnKOWGh-JstZ9_6HfE4UTsDZetFJt2GkNtULY3dChn17c7yhb/exec";
-const API_KEY = "LABFITNESS_2026_SECURE";
+function submitLogin() {
+  hideError();
 
-/*************************************************
- * HELPER FETCH
- *************************************************/
-function apiFetch(params) {
-  const query = new URLSearchParams({
-    key: API_KEY,
-    ...params
-  }).toString();
+  const role = document.querySelector("input[name=role]:checked").value;
+  const email = document.getElementById("email").value.trim();
+  const secret = document.getElementById("secret").value.trim();
 
-  return fetch(`${API_URL}?${query}`)
-    .then(res => {
-      if (!res.ok) throw new Error("Network error");
-      return res.json();
-    });
+  if (!email || !secret) {
+    return showError("Semua field wajib diisi");
+  }
+
+  if (role === "member") {
+    loginMember(email, secret);
+  } else {
+    loginAdmin(email, secret);
+  }
 }
 
 /*************************************************
  * MEMBER LOGIN
  *************************************************/
-function loginMember() {
-  const email = document.getElementById("email").value.trim();
-  const code  = document.getElementById("code").value.trim();
-
-  if (!email || !code) {
-    showError("Email dan kode wajib diisi");
-    return;
-  }
-
+function loginMember(email, code) {
   apiFetch({
     action: "login",
     email,
     code
   })
     .then(data => {
-      if (data.status === "success") {
-        localStorage.setItem("user", JSON.stringify({
-          role: "member",
-          member_code: data.member_code,
-          name: data.name
-        }));
-        window.location.href = "member.html";
-      } else {
-        showError(data.message || "Login gagal");
+      if (data.status !== "success") {
+        return showError(data.message || "Login member gagal");
       }
+
+      localStorage.setItem("user", JSON.stringify({
+        role: "member",
+        member_code: data.member_code,
+        name: data.name
+      }));
+
+      window.location.href = "member.html";
     })
-    .catch(() => showError("Gagal terhubung ke server"));
+    .catch(() => showError("Server tidak merespons"));
 }
 
 /*************************************************
  * ADMIN LOGIN
  *************************************************/
-function loginAdmin() {
-  const email = document.getElementById("email").value.trim();
-  const password = document.getElementById("code").value.trim();
-
-  if (!email || !password) {
-    showError("Email dan password wajib diisi");
-    return;
-  }
-
+function loginAdmin(email, password) {
   apiFetch({
     action: "adminLogin",
     email,
     password
   })
     .then(data => {
-      if (data.status === "success") {
-        localStorage.setItem("user", JSON.stringify({
-          role: "admin",
-          email: data.admin.email
-        }));
-        window.location.href = "admin.html";
-      } else {
-        showError(data.message || "Login admin gagal");
+      if (data.status !== "success") {
+        return showError(data.message || "Login admin gagal");
       }
+
+      localStorage.setItem("user", JSON.stringify({
+        role: "admin",
+        email: data.admin.email
+      }));
+
+      window.location.href = "admin.html";
     })
-    .catch(() => showError("Gagal terhubung ke server"));
+    .catch(() => showError("Server tidak merespons"));
 }
 
 /*************************************************
- * ERROR HANDLER
+ * ERROR UX
  *************************************************/
-function showError(message) {
+function showError(msg) {
   const el = document.getElementById("error");
-  if (!el) {
-    alert(message);
-    return;
-  }
-  el.innerText = message;
+  el.innerText = msg;
   el.classList.remove("hidden");
+}
+
+function hideError() {
+  document.getElementById("error").classList.add("hidden");
 }

@@ -1,8 +1,8 @@
 <!-- LOGIN FORM -->
-<div class="max-w-md mx-auto mt-20 p-6 bg-white rounded-2xl shadow space-y-4">
+<div class="max-w-sm mx-auto mt-20 p-6 bg-white rounded-xl shadow-md space-y-4">
 
   <!-- ROLE SELECT -->
-  <div class="flex gap-6 mb-2">
+  <div class="flex gap-4 mb-4">
     <label class="flex items-center gap-2 cursor-pointer">
       <input type="radio" name="role" value="member" checked class="form-radio">
       Member
@@ -13,37 +13,33 @@
     </label>
   </div>
 
-  <!-- EMAIL INPUT -->
-  <div>
-    <input
-      id="email"
-      type="email"
-      placeholder="Email"
-      class="w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
-    />
-  </div>
+  <!-- EMAIL -->
+  <input
+    id="email"
+    type="email"
+    placeholder="Email"
+    class="w-full border border-gray-300 p-2 rounded mb-3 focus:outline-none focus:ring-2 focus:ring-black"
+  />
 
-  <!-- SECRET INPUT (Kode Member / Password Admin) -->
-  <div>
-    <input
-      id="secret"
-      type="text"
-      placeholder="Kode Member"
-      class="w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
-    />
-  </div>
+  <!-- CODE / PASSWORD -->
+  <input
+    id="secret"
+    type="password"
+    placeholder="Kode Member"
+    class="w-full border border-gray-300 p-2 rounded mb-3 focus:outline-none focus:ring-2 focus:ring-black"
+  />
 
-  <!-- ERROR MESSAGE -->
+  <!-- ERROR -->
   <p id="error" class="text-red-600 text-sm hidden"></p>
 
-  <!-- LOGIN BUTTON -->
+  <!-- BUTTON -->
   <button
     onclick="submitLogin()"
-    class="w-full bg-black text-white py-3 rounded-lg font-semibold hover:bg-gray-900 transition-colors">
+    class="w-full bg-black text-white py-2 rounded hover:bg-gray-900 transition-colors">
     Login
   </button>
 
 </div>
 
-<!-- OPTIONAL: SCRIPT -->
+<!-- SCRIPT -->
 <script src="assets/js/app.js"></script>

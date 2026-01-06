@@ -13,7 +13,7 @@
 <div class="flex min-h-screen">
 
   <!-- SIDEBAR -->
-  <aside id="sidebar" class="fixed inset-y-0 left-0 w-64 bg-black text-white flex-col p-6 transform -translate-x-full md:translate-x-0 transition-transform z-50">
+  <aside id="sidebar" class="hidden md:flex w-64 bg-black text-white flex-col p-6 fixed md:static h-full z-50">
     <h1 class="text-2xl font-bold mb-8">Lab Fitness</h1>
 
     <nav class="space-y-2 text-sm">
@@ -44,23 +44,23 @@
     <!-- PAGE CONTENT -->
     <main class="p-4 md:p-6 space-y-6">
 
-      <!-- PROFILE CARD -->
-      <section class="bg-white rounded-2xl p-5 shadow flex items-center gap-4">
+      <!-- PROFILE + STATUS CARD -->
+      <section class="bg-white rounded-2xl p-5 shadow flex flex-col md:flex-row items-center md:items-start gap-4">
         <img
           id="photo"
-          src="https://via.placeholder.com/80"
+          src="https://via.placeholder.com/100"
           alt="Foto Member"
-          class="w-20 h-20 rounded-full object-cover border"
+          class="w-24 h-24 rounded-full object-cover border"
         />
-        <div>
+        <div class="flex-1">
           <h2 id="name" class="text-xl font-bold text-gray-900">-</h2>
           <p id="status" class="text-sm font-semibold text-gray-500 mt-1">-</p>
           <p id="badge" class="text-sm font-semibold text-gray-500 mt-1">-</p>
         </div>
       </section>
 
-      <!-- INFO GRID -->
-      <section class="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <!-- INFO GRID MOBILE & DESKTOP -->
+      <section class="grid grid-cols-1 md:grid-cols-4 gap-4">
         <div class="bg-white rounded-xl p-4 shadow">
           <p class="text-xs text-gray-500 mb-1">Kode Unik</p>
           <p id="code" class="font-semibold text-gray-900">-</p>
@@ -79,8 +79,8 @@
         </div>
       </section>
 
-      <!-- PROGRAM -->
-      <section class="bg-white rounded-2xl p-5 shadow">
+      <!-- PROGRAM CARD -->
+      <section class="bg-white rounded-2xl p-5 shadow md:max-w-3xl">
         <h3 class="font-bold text-gray-900 mb-2">Program Latihan</h3>
         <p id="program" class="text-gray-700 leading-relaxed">-</p>
         <p id="programDate" class="text-xs text-gray-400 mt-2">-</p>
@@ -91,5 +91,19 @@
 </div>
 
 <script src="assets/js/member.js"></script>
+<script>
+  function toggleMenu() {
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('overlay');
+    sidebar.classList.toggle('hidden');
+    overlay.classList.toggle('hidden');
+  }
+
+  function logout() {
+    localStorage.clear();
+    window.location.href = "index.html";
+  }
+</script>
+
 </body>
 </html>

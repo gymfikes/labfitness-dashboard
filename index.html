@@ -1,37 +1,49 @@
-<!-- ROLE SELECT -->
-<div class="flex gap-4 mb-4">
-  <label class="flex items-center gap-2">
-    <input type="radio" name="role" value="member" checked>
-    Member
-  </label>
-  <label class="flex items-center gap-2">
-    <input type="radio" name="role" value="admin">
-    Admin
-  </label>
+<!-- LOGIN FORM -->
+<div class="max-w-md mx-auto mt-20 p-6 bg-white rounded-2xl shadow space-y-4">
+
+  <!-- ROLE SELECT -->
+  <div class="flex gap-6 mb-2">
+    <label class="flex items-center gap-2 cursor-pointer">
+      <input type="radio" name="role" value="member" checked class="form-radio">
+      Member
+    </label>
+    <label class="flex items-center gap-2 cursor-pointer">
+      <input type="radio" name="role" value="admin" class="form-radio">
+      Admin
+    </label>
+  </div>
+
+  <!-- EMAIL INPUT -->
+  <div>
+    <input
+      id="email"
+      type="email"
+      placeholder="Email"
+      class="w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
+    />
+  </div>
+
+  <!-- SECRET INPUT (Kode Member / Password Admin) -->
+  <div>
+    <input
+      id="secret"
+      type="text"
+      placeholder="Kode Member"
+      class="w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
+    />
+  </div>
+
+  <!-- ERROR MESSAGE -->
+  <p id="error" class="text-red-600 text-sm hidden"></p>
+
+  <!-- LOGIN BUTTON -->
+  <button
+    onclick="submitLogin()"
+    class="w-full bg-black text-white py-3 rounded-lg font-semibold hover:bg-gray-900 transition-colors">
+    Login
+  </button>
+
 </div>
 
-<!-- EMAIL -->
-<input
-  id="email"
-  type="email"
-  placeholder="Email"
-  class="w-full border p-2 rounded mb-3"
-/>
-
-<!-- CODE / PASSWORD -->
-<input
-  id="secret"
-  type="password"
-  placeholder="Kode Member"
-  class="w-full border p-2 rounded mb-3"
-/>
-
-<!-- ERROR -->
-<p id="error" class="text-red-600 text-sm hidden"></p>
-
-<!-- BUTTON -->
-<button
-  onclick="submitLogin()"
-  class="w-full bg-black text-white py-2 rounded">
-  Login
-</button>
+<!-- OPTIONAL: SCRIPT -->
+<script src="assets/js/app.js"></script>

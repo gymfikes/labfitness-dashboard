@@ -1,45 +1,63 @@
-<!-- LOGIN FORM -->
-<div class="max-w-sm mx-auto mt-20 p-6 bg-white rounded-xl shadow-md space-y-4">
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login | Lab Fitness</title>
 
-  <!-- ROLE SELECT -->
-  <div class="flex gap-4 mb-4">
-    <label class="flex items-center gap-2 cursor-pointer">
-      <input type="radio" name="role" value="member" checked class="form-radio">
-      Member
-    </label>
-    <label class="flex items-center gap-2 cursor-pointer">
-      <input type="radio" name="role" value="admin" class="form-radio">
-      Admin
-    </label>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center">
+
+  <!-- LOGIN CARD -->
+  <div class="w-full max-w-sm bg-white p-6 rounded-2xl shadow-md space-y-4">
+    
+    <h1 class="text-2xl font-bold text-gray-900 text-center mb-4">Lab Fitness Login</h1>
+
+    <!-- ROLE SELECT -->
+    <div class="flex gap-4 justify-center mb-4">
+      <label class="flex items-center gap-2 cursor-pointer">
+        <input type="radio" name="role" value="member" checked class="accent-black">
+        Member
+      </label>
+      <label class="flex items-center gap-2 cursor-pointer">
+        <input type="radio" name="role" value="admin" class="accent-black">
+        Admin
+      </label>
+    </div>
+
+    <!-- EMAIL -->
+    <input
+      id="email"
+      type="email"
+      placeholder="Email"
+      class="w-full border border-gray-300 p-2 rounded-lg focus:ring-2 focus:ring-black focus:outline-none"
+    />
+
+    <!-- SECRET: Kode Member / Password Admin -->
+    <input
+      id="secret"
+      type="password"
+      placeholder="Kode Member"
+      class="w-full border border-gray-300 p-2 rounded-lg focus:ring-2 focus:ring-black focus:outline-none"
+    />
+
+    <!-- ERROR MESSAGE -->
+    <p id="error" class="text-red-600 text-sm hidden"></p>
+
+    <!-- LOGIN BUTTON -->
+    <button
+      onclick="submitLogin()"
+      class="w-full bg-black text-white py-2 rounded-lg hover:bg-gray-900 transition-colors"
+    >
+      Login
+    </button>
+    
   </div>
 
-  <!-- EMAIL -->
-  <input
-    id="email"
-    type="email"
-    placeholder="Email"
-    class="w-full border border-gray-300 p-2 rounded mb-3 focus:outline-none focus:ring-2 focus:ring-black"
-  />
+  <!-- APP JS -->
+  <script src="assets/js/app.js"></script>
 
-  <!-- CODE / PASSWORD -->
-  <input
-    id="secret"
-    type="password"
-    placeholder="Kode Member"
-    class="w-full border border-gray-300 p-2 rounded mb-3 focus:outline-none focus:ring-2 focus:ring-black"
-  />
-
-  <!-- ERROR -->
-  <p id="error" class="text-red-600 text-sm hidden"></p>
-
-  <!-- BUTTON -->
-  <button
-    onclick="submitLogin()"
-    class="w-full bg-black text-white py-2 rounded hover:bg-gray-900 transition-colors">
-    Login
-  </button>
-
-</div>
-
-<!-- SCRIPT -->
-<script src="assets/js/app.js"></script>
+</body>
+</html>

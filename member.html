@@ -4,10 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Member Dashboard | Lab Fitness</title>
-
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-
 <body class="bg-gray-100 min-h-screen">
 
 <div class="flex min-h-screen">
@@ -15,18 +13,13 @@
   <!-- SIDEBAR -->
   <aside id="sidebar" class="hidden md:flex w-64 bg-black text-white flex-col p-6 fixed md:static h-full z-50">
     <h1 class="text-2xl font-bold mb-8">Lab Fitness</h1>
-
     <nav class="space-y-2 text-sm">
       <a href="member.html" class="block px-4 py-2 rounded bg-gray-800">Dashboard</a>
       <a href="profile.html" class="block px-4 py-2 rounded hover:bg-gray-800">Profile</a>
       <a href="program.html" class="block px-4 py-2 rounded hover:bg-gray-800">Program</a>
       <a href="contact.html" class="block px-4 py-2 rounded hover:bg-gray-800">Contact</a>
     </nav>
-
-    <button onclick="logout()"
-      class="mt-auto text-sm text-gray-400 hover:text-white">
-      Logout
-    </button>
+    <button onclick="logout()" class="mt-auto text-sm text-gray-400 hover:text-white">Logout</button>
   </aside>
 
   <!-- OVERLAY MOBILE -->
@@ -42,49 +35,90 @@
     </header>
 
     <!-- PAGE CONTENT -->
-    <main class="p-4 md:p-6 space-y-6">
+    <main class="p-4 md:p-6">
 
-      <!-- PROFILE + STATUS CARD -->
-      <section class="bg-white rounded-2xl p-5 shadow flex flex-col md:flex-row items-center md:items-start gap-4">
-        <img
-          id="photo"
-          src="https://via.placeholder.com/100"
-          alt="Foto Member"
-          class="w-24 h-24 rounded-full object-cover border"
-        />
-        <div class="flex-1">
-          <h2 id="name" class="text-xl font-bold text-gray-900">-</h2>
-          <p id="status" class="text-sm font-semibold text-gray-500 mt-1">-</p>
-          <p id="badge" class="text-sm font-semibold text-gray-500 mt-1">-</p>
-        </div>
-      </section>
+      <!-- DESKTOP: 2-COLUMN LAYOUT -->
+      <div class="hidden md:flex gap-6">
+        <!-- LEFT COLUMN -->
+        <div class="flex-1 flex flex-col gap-6">
+          <!-- PROFILE CARD -->
+          <section class="bg-white rounded-2xl p-5 shadow flex items-center gap-4">
+            <img id="photo" src="https://via.placeholder.com/100" alt="Foto Member"
+                 class="w-24 h-24 rounded-full object-cover border"/>
+            <div>
+              <h2 id="name" class="text-xl font-bold text-gray-900">-</h2>
+              <p id="status" class="text-sm font-semibold text-gray-500 mt-1">-</p>
+              <p id="badge" class="text-sm font-semibold text-gray-500 mt-1">-</p>
+            </div>
+          </section>
 
-      <!-- INFO GRID MOBILE & DESKTOP -->
-      <section class="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div class="bg-white rounded-xl p-4 shadow">
-          <p class="text-xs text-gray-500 mb-1">Kode Unik</p>
-          <p id="code" class="font-semibold text-gray-900">-</p>
+          <!-- PROGRAM CARD -->
+          <section class="bg-white rounded-2xl p-5 shadow">
+            <h3 class="font-bold text-gray-900 mb-2">Program Latihan</h3>
+            <p id="program" class="text-gray-700 leading-relaxed">-</p>
+            <p id="programDate" class="text-xs text-gray-400 mt-2">-</p>
+          </section>
         </div>
-        <div class="bg-white rounded-xl p-4 shadow">
-          <p class="text-xs text-gray-500 mb-1">Sisa Hari</p>
-          <p id="days" class="font-semibold text-gray-900">-</p>
-        </div>
-        <div class="bg-white rounded-xl p-4 shadow">
-          <p class="text-xs text-gray-500 mb-1">Tipe Membership</p>
-          <p id="level" class="font-semibold text-gray-900">-</p>
-        </div>
-        <div class="bg-white rounded-xl p-4 shadow">
-          <p class="text-xs text-gray-500 mb-1">Kehadiran (30 hari)</p>
-          <p id="attendance" class="font-semibold text-gray-900">-</p>
-        </div>
-      </section>
 
-      <!-- PROGRAM CARD -->
-      <section class="bg-white rounded-2xl p-5 shadow md:max-w-3xl">
-        <h3 class="font-bold text-gray-900 mb-2">Program Latihan</h3>
-        <p id="program" class="text-gray-700 leading-relaxed">-</p>
-        <p id="programDate" class="text-xs text-gray-400 mt-2">-</p>
-      </section>
+        <!-- RIGHT COLUMN -->
+        <div class="w-1/3 flex flex-col gap-4">
+          <div class="bg-white rounded-xl p-4 shadow">
+            <p class="text-xs text-gray-500 mb-1">Kode Unik</p>
+            <p id="code" class="font-semibold text-gray-900">-</p>
+          </div>
+          <div class="bg-white rounded-xl p-4 shadow">
+            <p class="text-xs text-gray-500 mb-1">Sisa Hari</p>
+            <p id="days" class="font-semibold text-gray-900">-</p>
+          </div>
+          <div class="bg-white rounded-xl p-4 shadow">
+            <p class="text-xs text-gray-500 mb-1">Tipe Membership</p>
+            <p id="level" class="font-semibold text-gray-900">-</p>
+          </div>
+          <div class="bg-white rounded-xl p-4 shadow">
+            <p class="text-xs text-gray-500 mb-1">Kehadiran (30 hari)</p>
+            <p id="attendance" class="font-semibold text-gray-900">-</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- MOBILE: STACKED LAYOUT -->
+      <div class="md:hidden flex flex-col gap-6">
+        <!-- PROFILE + STATUS CARD -->
+        <section class="bg-white rounded-2xl p-5 shadow flex flex-col items-center gap-2">
+          <img id="photoMobile" src="https://via.placeholder.com/100" alt="Foto Member"
+               class="w-24 h-24 rounded-full object-cover border"/>
+          <h2 id="nameMobile" class="text-xl font-bold text-gray-900">-</h2>
+          <p id="statusMobile" class="text-sm font-semibold text-gray-500 mt-1">-</p>
+          <p id="badgeMobile" class="text-sm font-semibold text-gray-500 mt-1">-</p>
+        </section>
+
+        <!-- INFO GRID -->
+        <section class="grid grid-cols-2 gap-4">
+          <div class="bg-white rounded-xl p-4 shadow">
+            <p class="text-xs text-gray-500 mb-1">Kode Unik</p>
+            <p id="codeMobile" class="font-semibold text-gray-900">-</p>
+          </div>
+          <div class="bg-white rounded-xl p-4 shadow">
+            <p class="text-xs text-gray-500 mb-1">Sisa Hari</p>
+            <p id="daysMobile" class="font-semibold text-gray-900">-</p>
+          </div>
+          <div class="bg-white rounded-xl p-4 shadow">
+            <p class="text-xs text-gray-500 mb-1">Tipe Membership</p>
+            <p id="levelMobile" class="font-semibold text-gray-900">-</p>
+          </div>
+          <div class="bg-white rounded-xl p-4 shadow">
+            <p class="text-xs text-gray-500 mb-1">Kehadiran (30 hari)</p>
+            <p id="attendanceMobile" class="font-semibold text-gray-900">-</p>
+          </div>
+        </section>
+
+        <!-- PROGRAM CARD -->
+        <section class="bg-white rounded-2xl p-5 shadow">
+          <h3 class="font-bold text-gray-900 mb-2">Program Latihan</h3>
+          <p id="programMobile" class="text-gray-700 leading-relaxed">-</p>
+          <p id="programDateMobile" class="text-xs text-gray-400 mt-2">-</p>
+        </section>
+      </div>
 
     </main>
   </div>
@@ -107,3 +141,4 @@
 
 </body>
 </html>
+

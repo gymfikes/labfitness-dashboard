@@ -1,1 +1,65 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Member Dashboard | Lab Fitness</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100 min-h-screen">
+
+<!-- HEADER -->
+<header class="bg-black text-white p-4 flex justify-between items-center">
+  <h1 class="text-lg font-bold">Lab Fitness</h1>
+  <button onclick="logout()" class="text-sm">Logout</button>
+</header>
+
+<!-- CONTENT -->
+<main class="p-4 space-y-6">
+
+  <!-- PROFILE CARD -->
+  <div class="bg-white rounded-2xl p-4 shadow flex items-center gap-4">
+    <img id="photo" src="https://via.placeholder.com/80"
+      class="w-20 h-20 rounded-full object-cover"/>
+
+    <div>
+      <h2 id="name" class="text-xl font-bold">-</h2>
+      <p id="badge" class="text-sm text-green-600 font-semibold">-</p>
+    </div>
+  </div>
+
+  <!-- INFO GRID -->
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+    <div class="bg-white p-4 rounded-xl shadow">
+      <p class="text-xs text-gray-500">Kode Unik</p>
+      <p id="code" class="font-bold">-</p>
+    </div>
+    <div class="bg-white p-4 rounded-xl shadow">
+      <p class="text-xs text-gray-500">Sisa Hari</p>
+      <p id="days" class="font-bold">-</p>
+    </div>
+    <div class="bg-white p-4 rounded-xl shadow">
+      <p class="text-xs text-gray-500">Membership</p>
+      <p id="level" class="font-bold">-</p>
+    </div>
+    <div class="bg-white p-4 rounded-xl shadow">
+      <p class="text-xs text-gray-500">Kehadiran (30 hari)</p>
+      <p id="attendance" class="font-bold">-</p>
+    </div>
+  </div>
+
+  <!-- PROGRAM -->
+  <div class="bg-white rounded-2xl p-4 shadow">
+    <h3 class="font-bold mb-2">Program Latihan</h3>
+    <p id="program" class="text-gray-700">-</p>
+    <p id="programDate" class="text-xs text-gray-400 mt-1">-</p>
+  </div>
+
+</main>
+
+<script src="assets/js/member.js"></script>
+</body>
+</html>
 

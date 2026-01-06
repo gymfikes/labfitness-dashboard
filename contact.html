@@ -1,11 +1,105 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
-  <title>Contact</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Contact | Lab Fitness</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="p-6">
-  <h1 class="text-2xl font-bold">Contact</h1>
+<body class="bg-gray-100 min-h-screen">
+
+<div class="flex min-h-screen">
+
+  <!-- SIDEBAR (DESKTOP) -->
+  <aside class="hidden md:flex w-64 bg-black text-white flex-col p-6">
+    <h1 class="text-2xl font-bold mb-8">Lab Fitness</h1>
+    <nav class="space-y-2 text-sm">
+      <a href="member.html" class="block px-4 py-2 rounded hover:bg-gray-800">Dashboard</a>
+      <a href="profile.html" class="block px-4 py-2 rounded hover:bg-gray-800">Profile</a>
+      <a href="program.html" class="block px-4 py-2 rounded hover:bg-gray-800">Program</a>
+      <a href="contact.html" class="block px-4 py-2 rounded bg-gray-800">Contact</a>
+    </nav>
+    <button onclick="logout()" class="mt-auto text-sm text-gray-400 hover:text-white">Logout</button>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <div class="flex-1 flex flex-col">
+
+    <!-- TOPBAR (MOBILE) -->
+    <header class="md:hidden bg-black text-white p-4 flex justify-between items-center">
+      <span class="font-bold">Lab Fitness</span>
+      <button onclick="toggleMenu()" class="text-xl">☰</button>
+    </header>
+
+    <!-- PAGE CONTENT -->
+    <main class="p-4 md:p-6 space-y-6">
+
+      <h2 class="text-2xl font-bold text-gray-900 mb-4">Hubungi Kami</h2>
+
+      <!-- INFO CONTACT -->
+      <section class="bg-white rounded-2xl p-5 shadow space-y-4">
+        <p class="text-gray-700">
+          Jika ada pertanyaan, saran, atau keluhan, silakan hubungi kami melalui form di bawah atau langsung ke info kontak berikut:
+        </p>
+
+        <div class="space-y-2">
+          <p><strong>Alamat:</strong> Jl. Jenderal Soedirman, Purwokerto</p>
+          <p><strong>Email:</strong> info@labfitness.id</p>
+          <p><strong>Telepon / WhatsApp:</strong> +62 812-3456-7890</p>
+        </div>
+      </section>
+
+      <!-- CONTACT FORM -->
+      <section class="bg-white rounded-2xl p-5 shadow">
+        <h3 class="font-semibold text-gray-900 mb-3">Form Kontak</h3>
+
+        <form id="contactForm" class="space-y-4" onsubmit="submitContact(event)">
+          <div>
+            <label for="name" class="block text-sm font-medium text-gray-700">Nama</label>
+            <input type="text" id="name" class="w-full border p-2 rounded" required>
+          </div>
+
+          <div>
+            <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+            <input type="email" id="email" class="w-full border p-2 rounded" required>
+          </div>
+
+          <div>
+            <label for="message" class="block text-sm font-medium text-gray-700">Pesan</label>
+            <textarea id="message" rows="4" class="w-full border p-2 rounded" required></textarea>
+          </div>
+
+          <button type="submit" class="bg-black text-white py-2 px-4 rounded">
+            Kirim Pesan
+          </button>
+        </form>
+      </section>
+
+    </main>
+  </div>
+</div>
+
+<script src="assets/js/member.js"></script>
+<script>
+  function submitContact(e) {
+    e.preventDefault();
+
+    const name = document.getElementById("name").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const message = document.getElementById("message").value.trim();
+
+    if (!name || !email || !message) {
+      alert("Semua field wajib diisi!");
+      return;
+    }
+
+    // Tampilkan alert sementara (bisa diganti dengan backend)
+    alert("Terima kasih, pesan Anda telah terkirim!");
+    document.getElementById("contactForm").reset();
+
+    // TODO: Kirim ke backend / email
+  }
+</script>
+
 </body>
 </html>
-

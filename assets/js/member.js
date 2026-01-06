@@ -8,9 +8,7 @@ const API_KEY = "LABFITNESS_2026_SECURE";
  * AUTH GUARD
  *************************************************/
 const user = JSON.parse(localStorage.getItem("user"));
-if (!user || user.role !== "member" || !user.member_code) {
-  window.location.href = "index.html";
-}
+if (!user || user.role !== "member" || !user.member_code) window.location.href = "index.html";
 
 /*************************************************
  * LOGOUT
@@ -24,10 +22,7 @@ function logout() {
  * API HELPER
  *************************************************/
 function apiFetch(params) {
-  const query = new URLSearchParams({
-    key: API_KEY,
-    ...params
-  }).toString();
+  const query = new URLSearchParams({ key: API_KEY, ...params }).toString();
   return fetch(`${API_URL}?${query}`).then(res => res.json());
 }
 
@@ -36,40 +31,27 @@ function apiFetch(params) {
  *************************************************/
 document.addEventListener("DOMContentLoaded", loadMemberDashboard);
 function loadMemberDashboard() {
-  apiFetch({
-    action: "memberDashboard",
-    code: user.member_code
-  })
-  .then(data => {
-    if (data.status !== "success") return showError("Gagal memuat data member");
-    renderMember(data);
-  })
-  .catch(() => showError("Tidak dapat terhubung ke server"));
+  apiFetch({ action: "memberDashboard", code: user.member_code })
+    .then(data => {
+      if (data.status !== "success") return showError("Gagal memuat data member");
+      renderMember(data);
+    })
+    .catch(() => showError("Tidak dapat terhubung ke server"));
 }
 
 /*************************************************
- * RENDER MEMBER DASHBOARD
+ * RENDER UI
  *************************************************/
 function renderMember(data) {
-  // STATUS KEAKTIFAN
-  const statusEl = document.getElementById("status");
-  if (statusEl) {
-    if (data.status_keaktifan === "Aktif") {
-      statusEl.innerText = "Aktif";
-      statusEl.className = "text-sm font-semibold text-green-600 mb-1";
-    } else {
-      statusEl.innerText = "Tidak Aktif";
-      statusEl.className = "text-sm font-semibold text-red-500 mb-1";
-    }
-  }
-
   setText("name", data.full_name);
   setText("code", user.member_code);
   setText("days", `${data.days_remaining ?? "-"} hari`);
   setText("level", data.membership_type || "-");
   setText("attendance", data.attendance_30d ?? "0");
+  setText("attendanceTotal", data.attendance_total ?? "0"); // total attendance
   setText("program", data.program || "-");
   setText("programDate", data.program_sent_at ? `Dikirim: ${data.program_sent_at}` : "");
+  setText("statusActive", data.status_keaktifan || "-"); // tampilkan status keaktifan
 
   setBadge(Number(data.attendance_30d || 0));
 }
@@ -89,16 +71,14 @@ function setBadge(attendance) {
   const badge = document.getElementById("badge");
   if (!badge) return;
 
-  if (attendance >= 20) {
-    badge.innerText = "🔥 Consistent";
-    badge.className = "text-sm text-red-500 font-semibold";
-  } else if (attendance >= 10) {
-    badge.innerText = "💪 Active";
-    badge.className = "text-sm text-green-600 font-semibold";
-  } else {
-    badge.innerText = "🆕 New Member";
-    badge.className = "text-sm text-gray-500 font-semibold";
-  }
+  if (attendance >= 20) badge.innerText = "🔥 Consistent";
+  else if (attendance >= 10) badge.innerText = "💪 Active";
+  else badge.innerText = "🆕 New Member";
+
+  // badge styling
+  if (attendance >= 20) badge.className = "text-sm text-red-500 font-semibold";
+  else if (attendance >= 10) badge.className = "text-sm text-green-600 font-semibold";
+  else badge.className = "text-sm text-gray-500 font-semibold";
 }
 
 /*************************************************
@@ -106,5 +86,5 @@ function setBadge(attendance) {
  *************************************************/
 function showError(message) {
   console.error(message);
-  alert(message); // bisa diganti toast/modal
+  alert(message);
 }

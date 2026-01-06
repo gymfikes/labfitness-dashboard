@@ -77,3 +77,21 @@ function showError(msg) {
 function hideError() {
   document.getElementById("error").classList.add("hidden");
 }
+/*************************************************
+ * UX: DYNAMIC PLACEHOLDER LOGIN
+ *************************************************/
+document.querySelectorAll('input[name="role"]').forEach(radio => {
+  radio.addEventListener("change", () => {
+    const input = document.getElementById("secret");
+
+    if (!input) return;
+
+    input.placeholder =
+      radio.value === "member"
+        ? "Kode Member"
+        : "Password Admin";
+
+    // UX extra: reset value saat ganti role
+    input.value = "";
+  });
+});

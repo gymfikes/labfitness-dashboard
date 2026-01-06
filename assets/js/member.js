@@ -21,7 +21,7 @@ function logout() {
 }
 
 /*************************************************
- * SIDEBAR MOBILE TOGGLE
+ * SIDEBAR TOGGLE (MOBILE)
  *************************************************/
 function toggleMenu() {
   const sidebar = document.getElementById("sidebar");
@@ -29,7 +29,6 @@ function toggleMenu() {
   if (!sidebar || !overlay) return;
 
   const isHidden = sidebar.classList.contains("translate-x-full");
-
   if (isHidden) {
     sidebar.classList.remove("translate-x-full");
     overlay.classList.remove("hidden");
@@ -48,15 +47,14 @@ function apiFetch(params) {
     ...params
   }).toString();
 
-  return fetch(`${API_URL}?${query}`).then(res => res.json());
+  return fetch(`${API_URL}?${query}`)
+    .then(res => res.json());
 }
 
 /*************************************************
  * LOAD MEMBER DASHBOARD
  *************************************************/
-document.addEventListener("DOMContentLoaded", () => {
-  loadMemberDashboard();
-});
+document.addEventListener("DOMContentLoaded", loadMemberDashboard);
 
 function loadMemberDashboard() {
   apiFetch({
@@ -74,19 +72,30 @@ function loadMemberDashboard() {
 }
 
 /*************************************************
- * RENDER MEMBER UI
+ * RENDER MEMBER DASHBOARD
  *************************************************/
 function renderMember(data) {
+  // Info utama
   setText("name", data.full_name);
   setText("code", user.member_code);
   setText("days", `${data.days_remaining ?? "-"} hari`);
   setText("level", data.membership_type || "-");
-  setText("attendance", data.attendance_30d ?? "0");
-  setText("attendanceTotal", data.attendance_total ?? "0");
-  setText("program", data.program || "-");
-  setText("programDate", data.program_sent_at ? `Dikirim: ${data.program_sent_at}` : "");
-  setText("statusKeaktifan", data.status_keaktifan || "-");
 
+  // Attendance
+  setText("attendance", data.attendance_30d ?? "0");      // 30 hari terakhir
+  setText("attendanceTotal", data.attendance_total ?? "0"); // total dari awal
+
+  // Status keaktifan
+  setText("status", data.status_keaktifan || "-");
+
+  // Program latihan
+  setText("program", data.program || "-");
+  setText(
+    "programDate",
+    data.program_sent_at ? `Dikirim: ${data.program_sent_at}` : ""
+  );
+
+  // Badge
   setBadge(Number(data.attendance_30d || 0));
 }
 
@@ -122,5 +131,6 @@ function setBadge(attendance) {
  *************************************************/
 function showError(message) {
   console.error(message);
-  alert(message);
+  alert(message); // bisa diganti toast/modal
 }
+

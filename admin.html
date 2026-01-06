@@ -1,1 +1,58 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard | Lab Fitness</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body class="bg-gray-100 min-h-screen">
+
+<!-- HEADER -->
+<header class="bg-black text-white p-4 flex justify-between items-center">
+  <h1 class="text-lg font-bold">Lab Fitness Admin</h1>
+  <button onclick="logout()" class="text-sm">Logout</button>
+</header>
+
+<!-- CONTENT -->
+<main class="p-4 space-y-6">
+
+  <!-- KPI -->
+  <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+    <div class="bg-white rounded-2xl p-4 shadow">
+      <p class="text-sm text-gray-500">Total Member</p>
+      <h2 id="total" class="text-3xl font-bold">0</h2>
+    </div>
+    <div class="bg-white rounded-2xl p-4 shadow">
+      <p class="text-sm text-gray-500">Member Aktif</p>
+      <h2 id="aktif" class="text-3xl font-bold">0</h2>
+    </div>
+    <div class="bg-white rounded-2xl p-4 shadow">
+      <p class="text-sm text-gray-500">Member Expired</p>
+      <h2 id="expired" class="text-3xl font-bold">0</h2>
+    </div>
+    <div class="bg-white rounded-2xl p-4 shadow">
+      <p class="text-sm text-gray-500">Income</p>
+      <h2 id="income" class="text-3xl font-bold">Rp 0</h2>
+    </div>
+  </div>
+
+  <!-- CHART -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div class="bg-white p-4 rounded-2xl shadow">
+      <canvas id="memberChart"></canvas>
+    </div>
+    <div class="bg-white p-4 rounded-2xl shadow">
+      <canvas id="incomeChart"></canvas>
+    </div>
+  </div>
+
+</main>
+
+<script src="assets/js/admin.js"></script>
+</body>
+</html>
 

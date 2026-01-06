@@ -8,7 +8,9 @@ const API_KEY = "LABFITNESS_2026_SECURE";
  * AUTH GUARD
  *************************************************/
 const user = JSON.parse(localStorage.getItem("user"));
-if (!user || user.role !== "member" || !user.member_code) window.location.href = "index.html";
+if (!user || user.role !== "member" || !user.member_code) {
+  window.location.href = "index.html";
+}
 
 /*************************************************
  * LOGOUT
@@ -30,17 +32,24 @@ function apiFetch(params) {
  * LOAD MEMBER DASHBOARD
  *************************************************/
 document.addEventListener("DOMContentLoaded", loadMemberDashboard);
+
 function loadMemberDashboard() {
-  apiFetch({ action: "memberDashboard", code: user.member_code })
+  apiFetch({
+    action: "memberDashboard",
+    code: user.member_code
+  })
     .then(data => {
-      if (data.status !== "success") return showError("Gagal memuat data member");
+      if (data.status !== "success") {
+        showError("Gagal memuat data member");
+        return;
+      }
       renderMember(data);
     })
     .catch(() => showError("Tidak dapat terhubung ke server"));
 }
 
 /*************************************************
- * RENDER UI
+ * RENDER MEMBER DASHBOARD
  *************************************************/
 function renderMember(data) {
   setText("name", data.full_name);
@@ -48,10 +57,10 @@ function renderMember(data) {
   setText("days", `${data.days_remaining ?? "-"} hari`);
   setText("level", data.membership_type || "-");
   setText("attendance", data.attendance_30d ?? "0");
-  setText("attendanceTotal", data.attendance_total ?? "0"); // total attendance
+  setText("attendanceTotal", data.attendance_total ?? "0");
   setText("program", data.program || "-");
   setText("programDate", data.program_sent_at ? `Dikirim: ${data.program_sent_at}` : "");
-  setText("statusActive", data.status_keaktifan || "-"); // tampilkan status keaktifan
+  setText("status", data.status_keaktifan || "-");
 
   setBadge(Number(data.attendance_30d || 0));
 }
@@ -71,14 +80,28 @@ function setBadge(attendance) {
   const badge = document.getElementById("badge");
   if (!badge) return;
 
-  if (attendance >= 20) badge.innerText = "🔥 Consistent";
-  else if (attendance >= 10) badge.innerText = "💪 Active";
-  else badge.innerText = "🆕 New Member";
+  if (attendance >= 20) {
+    badge.innerText = "🔥 Consistent";
+    badge.className = "text-sm text-red-500 font-semibold";
+  } else if (attendance >= 10) {
+    badge.innerText = "💪 Active";
+    badge.className = "text-sm text-green-600 font-semibold";
+  } else {
+    badge.innerText = "🆕 New Member";
+    badge.className = "text-sm text-gray-500 font-semibold";
+  }
+}
 
-  // badge styling
-  if (attendance >= 20) badge.className = "text-sm text-red-500 font-semibold";
-  else if (attendance >= 10) badge.className = "text-sm text-green-600 font-semibold";
-  else badge.className = "text-sm text-gray-500 font-semibold";
+/*************************************************
+ * MOBILE SIDEBAR TOGGLE
+ *************************************************/
+function toggleMenu() {
+  const sidebar = document.getElementById("sidebar");
+  const overlay = document.getElementById("overlay");
+  if (!sidebar || !overlay) return;
+
+  sidebar.classList.toggle("hidden");
+  overlay.classList.toggle("hidden");
 }
 
 /*************************************************
@@ -86,5 +109,5 @@ function setBadge(attendance) {
  *************************************************/
 function showError(message) {
   console.error(message);
-  alert(message);
+  alert(message); // bisa diganti toast/modal nanti
 }

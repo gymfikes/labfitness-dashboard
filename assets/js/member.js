@@ -21,17 +21,42 @@ function logout() {
 }
 
 /*************************************************
+ * SIDEBAR MOBILE TOGGLE
+ *************************************************/
+function toggleMenu() {
+  const sidebar = document.getElementById("sidebar");
+  const overlay = document.getElementById("overlay");
+  if (!sidebar || !overlay) return;
+
+  const isHidden = sidebar.classList.contains("translate-x-full");
+
+  if (isHidden) {
+    sidebar.classList.remove("translate-x-full");
+    overlay.classList.remove("hidden");
+  } else {
+    sidebar.classList.add("translate-x-full");
+    overlay.classList.add("hidden");
+  }
+}
+
+/*************************************************
  * API HELPER
  *************************************************/
 function apiFetch(params) {
-  const query = new URLSearchParams({ key: API_KEY, ...params }).toString();
+  const query = new URLSearchParams({
+    key: API_KEY,
+    ...params
+  }).toString();
+
   return fetch(`${API_URL}?${query}`).then(res => res.json());
 }
 
 /*************************************************
  * LOAD MEMBER DASHBOARD
  *************************************************/
-document.addEventListener("DOMContentLoaded", loadMemberDashboard);
+document.addEventListener("DOMContentLoaded", () => {
+  loadMemberDashboard();
+});
 
 function loadMemberDashboard() {
   apiFetch({
@@ -49,7 +74,7 @@ function loadMemberDashboard() {
 }
 
 /*************************************************
- * RENDER MEMBER DASHBOARD
+ * RENDER MEMBER UI
  *************************************************/
 function renderMember(data) {
   setText("name", data.full_name);
@@ -60,7 +85,7 @@ function renderMember(data) {
   setText("attendanceTotal", data.attendance_total ?? "0");
   setText("program", data.program || "-");
   setText("programDate", data.program_sent_at ? `Dikirim: ${data.program_sent_at}` : "");
-  setText("status", data.status_keaktifan || "-");
+  setText("statusKeaktifan", data.status_keaktifan || "-");
 
   setBadge(Number(data.attendance_30d || 0));
 }
@@ -93,21 +118,9 @@ function setBadge(attendance) {
 }
 
 /*************************************************
- * MOBILE SIDEBAR TOGGLE
- *************************************************/
-function toggleMenu() {
-  const sidebar = document.getElementById("sidebar");
-  const overlay = document.getElementById("overlay");
-  if (!sidebar || !overlay) return;
-
-  sidebar.classList.toggle("hidden");
-  overlay.classList.toggle("hidden");
-}
-
-/*************************************************
  * ERROR HANDLER
  *************************************************/
 function showError(message) {
   console.error(message);
-  alert(message); // bisa diganti toast/modal nanti
+  alert(message);
 }

@@ -22,105 +22,110 @@ function logout() {
 }
 
 /*************************************************
- * LOAD DASHBOARD
+ * API HELPER
  *************************************************/
-loadAdminDashboard();
-loadIncomeChart();
+function apiFetch(params) {
+  const query = new URLSearchParams({
+    key: API_KEY,
+    role: "admin",
+    ...params
+  }).toString();
+
+  return fetch(`${API_URL}?${query}`).then(res => res.json());
+}
 
 /*************************************************
- * ADMIN DASHBOARD DATA
+ * INIT
+ *************************************************/
+document.addEventListener("DOMContentLoaded", () => {
+  loadAdminDashboard();
+});
+
+/*************************************************
+ * LOAD DASHBOARD
  *************************************************/
 function loadAdminDashboard() {
-  const url =
-    `${API_URL}` +
-    `?action=adminDashboard` +
-    `&key=${API_KEY}` +
-    `&role=admin`;
-
-  fetch(url)
-    .then(res => res.json())
+  apiFetch({ action: "adminDashboard" })
     .then(data => {
       if (data.status !== "success") {
         showError("Gagal memuat dashboard admin");
         return;
       }
 
-      renderAdminDashboard(data);
+      renderKPI(data);
+      renderIncomeChartFromDashboard(data.pemasukan || []);
     })
-    .catch(() => {
-      showError("Tidak dapat terhubung ke server");
-    });
+    .catch(() => showError("Tidak dapat terhubung ke server"));
 }
 
 /*************************************************
  * RENDER KPI
  *************************************************/
-function renderAdminDashboard(data) {
-  document.getElementById("aktif").innerText = data.aktif ?? "0";
-  document.getElementById("tidakAktif").innerText = data.tidak_aktif ?? "0";
+function renderKPI(data) {
+  const aktif = Number(data.aktif || 0);
+  const expired = Number(data.tidak_aktif || 0);
+  const total = aktif + expired;
 
-  const total = Number(data.aktif || 0) + Number(data.tidak_aktif || 0);
-  document.getElementById("total").innerText = total;
+  setText("total", total);
+  setText("aktif", aktif);
+  setText("expired", expired);
+
+  const incomeTotal = (data.pemasukan || [])
+    .reduce((sum, item) => sum + Number(item.jumlah || 0), 0);
+
+  setText("income", formatRupiah(incomeTotal));
 }
 
 /*************************************************
  * INCOME CHART
  *************************************************/
-function loadIncomeChart() {
-  const url =
-    `${API_URL}` +
-    `?action=adminIncomeChart` +
-    `&key=${API_KEY}` +
-    `&role=admin`;
+let incomeChartInstance = null;
 
-  fetch(url)
-    .then(res => res.json())
-    .then(data => {
-      if (data.status !== "success") {
-        showError("Gagal memuat chart pemasukan");
-        return;
-      }
+function renderIncomeChartFromDashboard(pemasukan) {
+  const labels = pemasukan.map(p => p.bulan);
+  const values = pemasukan.map(p => Number(p.jumlah || 0));
 
-      renderIncomeChart(data.labels, data.values);
-    })
-    .catch(() => {
-      showError("Gagal memuat data chart");
-    });
-}
+  const ctx = document.getElementById("incomeChart");
+  if (!ctx) return;
 
-/*************************************************
- * RENDER CHART (Chart.js)
- *************************************************/
-function renderIncomeChart(labels, values) {
-  const ctx = document
-    .getElementById("incomeChart")
-    .getContext("2d");
+  if (incomeChartInstance) {
+    incomeChartInstance.destroy();
+  }
 
-  new Chart(ctx, {
+  incomeChartInstance = new Chart(ctx, {
     type: "bar",
     data: {
       labels,
-      datasets: [
-        {
-          label: "Pendapatan (Rp)",
-          data: values
-        }
-      ]
+      datasets: [{
+        label: "Pendapatan (Rp)",
+        data: values
+      }]
     },
     options: {
       responsive: true,
       plugins: {
-        legend: {
-          display: false
-        }
+        legend: { display: false }
       }
     }
   });
 }
 
 /*************************************************
+ * HELPERS
+ *************************************************/
+function setText(id, value) {
+  const el = document.getElementById(id);
+  if (el) el.innerText = value ?? "0";
+}
+
+function formatRupiah(number) {
+  return "Rp " + Number(number || 0).toLocaleString("id-ID");
+}
+
+/*************************************************
  * ERROR HANDLER
  *************************************************/
 function showError(message) {
+  console.error(message);
   alert(message);
 }

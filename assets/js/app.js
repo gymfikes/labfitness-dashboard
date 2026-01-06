@@ -1,11 +1,34 @@
+/*************************************************
+ * CONFIG
+ *************************************************/
+const API_URL =
+  "https://script.google.com/macros/s/AKfycbzVS9DZ6SdoZ5o5-ODUnKOWGh-JstZ9_6HfE4UTsDZetFJt2GkNtULY3dChn17c7yhb/exec";
+const API_KEY = "LABFITNESS_2026_SECURE";
+
+/*************************************************
+ * API FETCH HELPER
+ *************************************************/
+function apiFetch(params) {
+  const query = new URLSearchParams({
+    key: API_KEY,
+    ...params
+  }).toString();
+
+  return fetch(`${API_URL}?${query}`)
+    .then(res => res.json());
+}
+
+/*************************************************
+ * MAIN SUBMIT HANDLER
+ *************************************************/
 function submitLogin() {
   hideError();
 
-  const role = document.querySelector("input[name=role]:checked").value;
-  const email = document.getElementById("email").value.trim();
-  const secret = document.getElementById("secret").value.trim();
+  const role   = document.querySelector('input[name="role"]:checked')?.value;
+  const email  = document.getElementById("email")?.value.trim();
+  const secret = document.getElementById("secret")?.value.trim();
 
-  if (!email || !secret) {
+  if (!role || !email || !secret) {
     return showError("Semua field wajib diisi");
   }
 
@@ -27,7 +50,7 @@ function loginMember(email, code) {
   })
     .then(data => {
       if (data.status !== "success") {
-        return showError(data.message || "Login member gagal");
+        throw new Error(data.message || "Login member gagal");
       }
 
       localStorage.setItem("user", JSON.stringify({
@@ -38,7 +61,7 @@ function loginMember(email, code) {
 
       window.location.href = "member.html";
     })
-    .catch(() => showError("Server tidak merespons"));
+    .catch(err => showError(err.message || "Server tidak merespons"));
 }
 
 /*************************************************
@@ -52,7 +75,7 @@ function loginAdmin(email, password) {
   })
     .then(data => {
       if (data.status !== "success") {
-        return showError(data.message || "Login admin gagal");
+        throw new Error(data.message || "Login admin gagal");
       }
 
       localStorage.setItem("user", JSON.stringify({
@@ -62,36 +85,47 @@ function loginAdmin(email, password) {
 
       window.location.href = "admin.html";
     })
-    .catch(() => showError("Server tidak merespons"));
+    .catch(err => showError(err.message || "Server tidak merespons"));
 }
 
 /*************************************************
- * ERROR UX
+ * UX: ERROR HANDLER
  *************************************************/
-function showError(msg) {
+function showError(message) {
   const el = document.getElementById("error");
-  el.innerText = msg;
+  if (!el) return;
+
+  el.innerText = message;
   el.classList.remove("hidden");
 }
 
 function hideError() {
-  document.getElementById("error").classList.add("hidden");
+  const el = document.getElementById("error");
+  if (!el) return;
+
+  el.classList.add("hidden");
 }
+
 /*************************************************
- * UX: DYNAMIC PLACEHOLDER LOGIN
+ * UX: DYNAMIC PLACEHOLDER & INPUT TYPE
  *************************************************/
-document.querySelectorAll('input[name="role"]').forEach(radio => {
-  radio.addEventListener("change", () => {
-    const input = document.getElementById("secret");
+document.addEventListener("DOMContentLoaded", () => {
+  const secretInput = document.getElementById("secret");
 
-    if (!input) return;
+  document.querySelectorAll('input[name="role"]').forEach(radio => {
+    radio.addEventListener("change", () => {
+      if (!secretInput) return;
 
-    input.placeholder =
-      radio.value === "member"
+      const isMember = radio.value === "member";
+
+      secretInput.placeholder = isMember
         ? "Kode Member"
         : "Password Admin";
 
-    // UX extra: reset value saat ganti role
-    input.value = "";
+      secretInput.type = isMember ? "text" : "password";
+      secretInput.value = "";
+
+      hideError();
+    });
   });
 });

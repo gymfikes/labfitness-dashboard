@@ -20,3 +20,22 @@ function loginMember() {
       }
     });
 }
+function loginAdmin() {
+  const email = document.getElementById("email").value;
+  const code  = document.getElementById("code").value;
+
+  fetch(`${API_URL}?action=adminLogin&email=${email}&password=${code}`)
+    .then(res => res.json())
+    .then(data => {
+      if (data.status === "success") {
+        localStorage.setItem("user", JSON.stringify({
+          role: "admin",
+          email: data.admin.email
+        }));
+        window.location.href = "admin.html";
+      } else {
+        document.getElementById("error").innerText = data.message;
+        document.getElementById("error").classList.remove("hidden");
+      }
+    });
+}

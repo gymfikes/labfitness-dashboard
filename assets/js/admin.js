@@ -2,50 +2,54 @@ const API_URL = "https://script.google.com/macros/s/AKfycbzVS9DZ6SdoZ5o5-ODUnKOW
 const API_KEY = "LABFITNESS_2026_SECURE";
 
 const user = JSON.parse(localStorage.getItem("user"));
-if (!user || user.role !== "admin") window.location.href = "index.html";
+if (!user || user.role !== "admin") location.href = "index.html";
 
-function logout() {
+function logout(){
   localStorage.clear();
-  window.location.href = "index.html";
+  location.href="index.html";
 }
 
-function apiFetch(params) {
-  const query = new URLSearchParams({ key: API_KEY, ...params }).toString();
-  return fetch(`${API_URL}?${query}`).then(res => res.json());
+function apiFetch(params){
+  return fetch(`${API_URL}?` + new URLSearchParams({key:API_KEY,...params}))
+    .then(r=>r.json());
 }
 
-// Load dashboard
-document.addEventListener("DOMContentLoaded", () => {
-  loadAdminDashboard();
-  loadIncomeChart();
+document.addEventListener("DOMContentLoaded",()=>{
+  loadSummary();
+  loadCharts();
 });
 
-function loadAdminDashboard() {
-  apiFetch({ action: "adminDashboard", role: "admin" })
-    .then(data => {
-      if (data.status !== "success") return alert("Gagal memuat dashboard");
-      document.getElementById("aktif").innerText = data.aktif;
-      document.getElementById("expired").innerText = data.tidak_aktif;
-      document.getElementById("total").innerText = data.aktif + data.tidak_aktif;
-      document.getElementById("income").innerText = "Rp " + (data.totalIncome || 0).toLocaleString("id-ID");
-    })
-    .catch(() => alert("Gagal memuat dashboard"));
+function loadSummary(){
+  apiFetch({action:"adminDashboard"}).then(d=>{
+    total.innerText = d.total;
+    aktif.innerText = d.aktif;
+    expired.innerText = d.tidak_aktif;
+    income.innerText = "Rp " + d.pemasukan_bulan_ini.toLocaleString("id-ID");
+  });
 }
 
-function loadIncomeChart() {
-  apiFetch({ action: "adminIncomeChart", role: "admin" })
-    .then(data => {
-      if (data.status !== "success") return alert("Gagal memuat chart");
-      renderIncomeChart(data.labels, data.values);
-    })
-    .catch(() => alert("Gagal memuat chart"));
+function loadCharts(){
+  apiFetch({action:"adminIncomeChart"}).then(d=>{
+    renderChart("incomeChart", "bar", d.labels, d.values);
+  });
+
+  apiFetch({action:"adminPaymentPie"}).then(d=>{
+    renderChart("paymentChart", "pie", d.labels, d.values);
+  });
+
+  apiFetch({action:"adminDailyChart"}).then(d=>{
+    renderChart("dailyChart", "line", d.labels, d.values);
+  });
+
+  apiFetch({action:"adminWeeklyChart"}).then(d=>{
+    renderChart("weeklyChart", "bar", d.labels, d.values);
+  });
 }
 
-function renderIncomeChart(labels, values) {
-  const ctx = document.getElementById("incomeChart").getContext("2d");
-  new Chart(ctx, {
-    type: "bar",
-    data: { labels, datasets: [{ label: "Pendapatan (Rp)", data: values, backgroundColor: "#1F2937" }] },
-    options: { responsive:true, plugins:{legend:{display:false}} }
+function renderChart(id,type,labels,data){
+  new Chart(document.getElementById(id),{
+    type,
+    data:{labels,datasets:[{data,backgroundColor:"#111"}]},
+    options:{responsive:true,plugins:{legend:{display:type==="pie"}}}
   });
 }

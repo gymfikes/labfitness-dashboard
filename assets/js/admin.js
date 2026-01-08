@@ -1,55 +1,156 @@
-const API_URL = "https://script.google.com/macros/s/AKfycbzVS9DZ6SdoZ5o5-ODUnKOWGh-JstZ9_6HfE4UTsDZetFJt2GkNtULY3dChn17c7yhb/exec";
+<script>
+/*************************************************
+ * CONFIG
+ *************************************************/
+const API_URL = "PASTE_URL_GAS_KAMU_DI_SINI";
 const API_KEY = "LABFITNESS_2026_SECURE";
 
-const user = JSON.parse(localStorage.getItem("user"));
-if (!user || user.role !== "admin") location.href = "index.html";
+/*************************************************
+ * HELPER FETCH
+ *************************************************/
+async function apiFetch(params = {}) {
+  const query = new URLSearchParams({
+    ...params,
+    key: API_KEY
+  }).toString();
 
-function logout(){
-  localStorage.clear();
-  location.href="index.html";
+  const res = await fetch(`${API_URL}?${query}`);
+  const data = await res.json();
+
+  if (data.status !== "success") {
+    throw new Error(data.message || "API Error");
+  }
+  return data;
 }
 
-function apiFetch(params){
-  return fetch(`${API_URL}?` + new URLSearchParams({key:API_KEY,...params}))
-    .then(r=>r.json());
-}
-
-document.addEventListener("DOMContentLoaded",()=>{
-  loadSummary();
-  loadCharts();
+/*************************************************
+ * DOM READY
+ *************************************************/
+document.addEventListener("DOMContentLoaded", () => {
+  loadDashboard();
+  loadIncomeChart();
 });
 
-function loadSummary(){
-  apiFetch({action:"adminDashboard"}).then(d=>{
-    total.innerText = d.total;
-    aktif.innerText = d.aktif;
-    expired.innerText = d.tidak_aktif;
-    income.innerText = "Rp " + d.pemasukan_bulan_ini.toLocaleString("id-ID");
+/*************************************************
+ * LOAD DASHBOARD
+ *************************************************/
+async function loadDashboard() {
+  try {
+    showSkeleton(true);
+
+    const data = await apiFetch({
+      action: "adminDashboard",
+      role: "admin"
+    });
+
+    console.log("ADMIN DASHBOARD:", data);
+
+    setText("totalMember", data.total_member);
+    setText("memberAktif", data.member_aktif);
+    setText("memberNonAktif", data.member_tidak_aktif);
+    setCurrency("totalIncome", data.total_income);
+
+  } catch (err) {
+    console.error(err);
+    alert("Gagal memuat dashboard admin");
+  } finally {
+    showSkeleton(false);
+  }
+}
+
+/*************************************************
+ * LOAD INCOME CHART
+ *************************************************/
+async function loadIncomeChart() {
+  try {
+    const data = await apiFetch({
+      action: "adminIncomeChart",
+      role: "admin"
+    });
+
+    renderIncomeChart(data.labels, data.values);
+
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+/*************************************************
+ * RENDER CHART (Chart.js)
+ *************************************************/
+function renderIncomeChart(labels = [], values = []) {
+  const ctx = document.getElementById("incomeChart");
+
+  if (!ctx) return;
+
+  new Chart(ctx, {
+    type: "line",
+    data: {
+      labels,
+      datasets: [{
+        label: "Pemasukan",
+        data: values,
+        tension: 0.4
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { display: false }
+      }
+    }
   });
 }
 
-function loadCharts(){
-  apiFetch({action:"adminIncomeChart"}).then(d=>{
-    renderChart("incomeChart", "bar", d.labels, d.values);
-  });
+/*************************************************
+ * EXPORT PDF
+ *************************************************/
+async function exportPDF() {
+  try {
+    const data = await apiFetch({
+      action: "exportPDF",
+      role: "admin"
+    });
 
-  apiFetch({action:"adminPaymentPie"}).then(d=>{
-    renderChart("paymentChart", "pie", d.labels, d.values);
-  });
+    window.open(data.pdf_url, "_blank");
 
-  apiFetch({action:"adminDailyChart"}).then(d=>{
-    renderChart("dailyChart", "line", d.labels, d.values);
-  });
-
-  apiFetch({action:"adminWeeklyChart"}).then(d=>{
-    renderChart("weeklyChart", "bar", d.labels, d.values);
-  });
+  } catch (err) {
+    console.error(err);
+    alert("Gagal export PDF");
+  }
 }
 
-function renderChart(id,type,labels,data){
-  new Chart(document.getElementById(id),{
-    type,
-    data:{labels,datasets:[{data,backgroundColor:"#111"}]},
-    options:{responsive:true,plugins:{legend:{display:type==="pie"}}}
-  });
+/*************************************************
+ * UI HELPERS
+ *************************************************/
+function setText(id, value) {
+  const el = document.getElementById(id);
+  if (!el) return;
+
+  el.textContent =
+    typeof value === "number"
+      ? value.toLocaleString("id-ID")
+      : value || "-";
 }
+
+function setCurrency(id, value) {
+  const el = document.getElementById(id);
+  if (!el) return;
+
+  el.textContent =
+    typeof value === "number"
+      ? "Rp " + value.toLocaleString("id-ID")
+      : "Rp 0";
+}
+
+function showSkeleton(show) {
+  document
+    .querySelectorAll(".skeleton")
+    .forEach(el => el.classList.toggle("hidden", !show));
+
+  document
+    .querySelectorAll(".real-content")
+    .forEach(el => el.classList.toggle("hidden", show));
+}
+</script>
+

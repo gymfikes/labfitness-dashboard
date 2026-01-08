@@ -45,10 +45,10 @@ async function loadDashboard() {
 
     console.log("ADMIN DASHBOARD:", data);
 
-    setText("totalMember", data.total_member);
-    setText("memberAktif", data.member_aktif);
-    setText("memberNonAktif", data.member_tidak_aktif);
-    setCurrency("totalIncome", data.total_income);
+    setText("total", data.total_member);
+    setText("aktif", data.member_aktif);
+    setText("expired", data.member_tidak_aktif);
+    setCurrency("income", data.total_income);
 
   } catch (err) {
     console.error(err);

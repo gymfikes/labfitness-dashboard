@@ -1,15 +1,30 @@
 /*************************************************
- * CONFIG
+ * LAB FITNESS — ADMIN DASHBOARD JS (FINAL)
+ * ✔ Clean
+ * ✔ Stable
+ * ✔ Insight ready
+ * ✔ Pie chart fixed size
  *************************************************/
+
+/* ================= CONFIG ================= */
+
 const API_URL = "https://script.google.com/macros/s/AKfycbzVS9DZ6SdoZ5o5-ODUnKOWGh-JstZ9_6HfE4UTsDZetFJt2GkNtULY3dChn17c7yhb/exec";
 const API_KEY = "LABFITNESS_2026_SECURE";
 
-/*************************************************
- * FETCH HELPER
- *************************************************/
+/* ================= STATE ================= */
+
+const charts = {}; // prevent double render
+
+/* ================= FETCH HELPER ================= */
+
 async function apiFetch(params = {}) {
-  const q = new URLSearchParams({ key: API_KEY, ...params }).toString();
-  const res = await fetch(`${API_URL}?${q}`);
+  const query = new URLSearchParams({
+    key: API_KEY,
+    role: "admin",
+    ...params
+  }).toString();
+
+  const res = await fetch(`${API_URL}?${query}`);
   const data = await res.json();
 
   if (data.status !== "success") {
@@ -18,9 +33,8 @@ async function apiFetch(params = {}) {
   return data;
 }
 
-/*************************************************
- * DOM READY
- *************************************************/
+/* ================= DOM READY ================= */
+
 document.addEventListener("DOMContentLoaded", () => {
   loadDashboard();
   loadIncomeChart();
@@ -30,80 +44,94 @@ document.addEventListener("DOMContentLoaded", () => {
   loadInsight();
 });
 
-/*************************************************
- * DASHBOARD KPI
- *************************************************/
+/* ================= KPI ================= */
+
 async function loadDashboard() {
   try {
-    const d = await apiFetch({ action: "adminDashboard", role: "admin" });
-
+    const d = await apiFetch({ action: "adminDashboard" });
     setText("total", d.total_member);
     setText("aktif", d.member_aktif);
     setText("expired", d.member_tidak_aktif);
     setCurrency("income", d.total_income);
-
   } catch (e) {
-    console.error(e);
-    alert("Gagal memuat dashboard");
+    console.error("Dashboard error:", e);
   }
 }
 
-/*************************************************
- * INCOME (MONTHLY)
- *************************************************/
+/* ================= CHART LOADERS ================= */
+
 async function loadIncomeChart() {
   try {
-    const d = await apiFetch({ action: "adminIncomeChart", role: "admin" });
+    const d = await apiFetch({ action: "adminIncomeChart" });
     renderLine("incomeChart", d.labels, d.values, "Pemasukan Bulanan");
   } catch (e) {
-    console.error(e);
+    console.error("Income chart error:", e);
   }
 }
 
-/*************************************************
- * DAILY
- *************************************************/
 async function loadDailyChart() {
   try {
-    const d = await apiFetch({ action: "adminDailyChart", role: "admin" });
+    const d = await apiFetch({ action: "adminDailyChart" });
     renderLine("dailyChart", d.labels, d.values, "Pemasukan Harian");
   } catch (e) {
-    console.error(e);
+    console.error("Daily chart error:", e);
   }
 }
 
-/*************************************************
- * WEEKLY
- *************************************************/
 async function loadWeeklyChart() {
   try {
-    const d = await apiFetch({ action: "adminWeeklyChart", role: "admin" });
+    const d = await apiFetch({ action: "adminWeeklyChart" });
     renderBar("weeklyChart", d.labels, d.values, "Pemasukan Mingguan");
   } catch (e) {
-    console.error(e);
+    console.error("Weekly chart error:", e);
   }
 }
 
-/*************************************************
- * PAYMENT PIE
- *************************************************/
 async function loadPaymentChart() {
   try {
-    const d = await apiFetch({ action: "adminPaymentPie", role: "admin" });
+    const d = await apiFetch({ action: "adminPaymentPie" });
     renderPie("paymentChart", d.labels, d.values);
   } catch (e) {
-    console.error(e);
+    console.error("Payment pie error:", e);
   }
 }
 
-/*************************************************
- * CHART RENDERERS
- *************************************************/
-function renderLine(id, labels = [], values = [], label = "") {
+/* ================= INSIGHT ================= */
+
+async function loadInsight() {
+  try {
+    const d = await apiFetch({ action: "adminInsight" });
+    const ul = document.getElementById("insightList");
+    if (!ul) return;
+
+    ul.innerHTML = "";
+
+    (d.insight || ["Tidak ada insight saat ini"]).forEach(text => {
+      const li = document.createElement("li");
+      li.textContent = "• " + text;
+      ul.appendChild(li);
+    });
+  } catch (e) {
+    console.error("Insight error:", e);
+  }
+}
+
+/* ================= CHART RENDERERS ================= */
+
+function destroyChart(id) {
+  if (charts[id]) {
+    charts[id].destroy();
+    delete charts[id];
+  }
+}
+
+function renderLine(id, labels, values, label) {
   const el = document.getElementById(id);
   if (!el) return;
 
-  new Chart(el, {
+  destroyChart(id);
+
+  charts[id] = new Chart(el, {
     type: "line",
     data: {
       labels,
@@ -121,11 +149,13 @@ function renderLine(id, labels = [], values = [], label = "") {
   });
 }
 
-function renderBar(id, labels = [], values = [], label = "") {
+function renderBar(id, labels, values, label) {
   const el = document.getElementById(id);
   if (!el) return;
 
-  new Chart(el, {
+  destroyChart(id);
+
+  charts[id] = new Chart(el, {
     type: "bar",
     data: {
       labels,
@@ -141,47 +171,39 @@ function renderBar(id, labels = [], values = [], label = "") {
   });
 }
 
-function renderPie(id, labels = [], values = []) {
+function renderPie(id, labels, values) {
   const el = document.getElementById(id);
   if (!el) return;
 
-  new Chart(el, {
+  destroyChart(id);
+
+  charts[id] = new Chart(el, {
     type: "pie",
     data: {
       labels,
-      datasets: [{ data: values }]
+      datasets: [{
+        data: values,
+        radius: "65%" // 🔒 size lock
+      }]
     },
-    options: { responsive: true }
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          position: "bottom",
+          labels: {
+            boxWidth: 12,
+            padding: 12
+          }
+        }
+      }
+    }
   });
 }
 
-/*************************************************
- * LOAD INSIGHT
- *************************************************/
-async function loadInsight() {
-  try {
-    const d = await apiFetch({ action: "adminInsight", role: "admin" });
+/* ================= UI HELPERS ================= */
 
-    const ul = document.getElementById("insightList");
-    if (!ul) return;
-
-    ul.innerHTML = "";
-
-    d.insight.forEach(text => {
-      const li = document.createElement("li");
-      li.textContent = "• " + text;
-      ul.appendChild(li);
-    });
-
-  } catch (e) {
-    console.error("Insight error:", e);
-  }
-}
-
-
-/*************************************************
- * UI HELPERS
- *************************************************/
 function setText(id, value) {
   const el = document.getElementById(id);
   if (!el) return;
@@ -198,9 +220,8 @@ function setCurrency(id, value) {
       : "Rp 0";
 }
 
-/*************************************************
- * LOGOUT
- *************************************************/
+/* ================= LOGOUT ================= */
+
 function logout() {
   localStorage.clear();
   location.href = "index.html";

@@ -5,69 +5,113 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Admin Dashboard | Lab Fitness</title>
 
+<!-- Tailwind (dev mode OK for now) -->
 <script src="https://cdn.tailwindcss.com"></script>
+
+<!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 </head>
-<body class="bg-gray-100 min-h-screen">
+<body class="bg-gray-100 min-h-screen text-gray-800">
 
-<header class="bg-black text-white px-4 py-3 flex justify-between items-center">
-  <h1 class="text-lg font-bold">Lab Fitness — Admin Dashboard</h1>
-  <button onclick="logout()" class="text-sm hover:underline">Logout</button>
+<!-- HEADER -->
+<header class="bg-black text-white px-5 py-4 flex justify-between items-center shadow">
+  <h1 class="text-lg md:text-xl font-bold tracking-wide">
+    Lab Fitness — Admin Dashboard
+  </h1>
+  <button onclick="logout()" class="text-sm hover:underline">
+    Logout
+  </button>
 </header>
 
-<main class="p-4 max-w-7xl mx-auto space-y-6">
+<!-- MAIN -->
+<main class="p-4 md:p-6 max-w-7xl mx-auto space-y-6">
 
-<!-- KPI -->
-<section class="grid grid-cols-2 md:grid-cols-4 gap-4">
-  <div class="card"><p>Total Member</p><h2 id="total">—</h2></div>
-  <div class="card"><p>Aktif</p><h2 id="aktif" class="text-green-600">—</h2></div>
-  <div class="card"><p>Tidak Aktif</p><h2 id="expired" class="text-red-500">—</h2></div>
-  <div class="card"><p>Pemasukan Bulan Ini</p><h2 id="income">—</h2></div>
-</section>
+  <!-- KPI -->
+  <section class="grid grid-cols-2 md:grid-cols-4 gap-4">
 
-<!-- Charts -->
-<section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div class="card">
+      <p class="label">Total Member</p>
+      <h2 id="total">—</h2>
+    </div>
 
-  <div class="chart-box">
-    <h3>Pemasukan Bulanan</h3>
-    <canvas id="incomeChart"></canvas>
-  </div>
+    <div class="card">
+      <p class="label">Member Aktif</p>
+      <h2 id="aktif" class="text-green-600">—</h2>
+    </div>
 
-  <div class="chart-box">
-    <h3>Cash vs QRIS</h3>
-    <canvas id="paymentChart"></canvas>
-  </div>
+    <div class="card">
+      <p class="label">Tidak Aktif</p>
+      <h2 id="expired" class="text-red-500">—</h2>
+    </div>
 
-  <div class="chart-box">
-    <h3>Pemasukan Harian</h3>
-    <canvas id="dailyChart"></canvas>
-  </div>
+    <div class="card">
+      <p class="label">Pemasukan Bulan Ini</p>
+      <h2 id="income">—</h2>
+    </div>
 
-  <div class="chart-box">
-    <h3>Pemasukan Mingguan</h3>
-    <canvas id="weeklyChart"></canvas>
-  </div>
+  </section>
 
-</section>
+  <!-- CHARTS -->
+  <section class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+    <div class="chart-box">
+      <h3 class="chart-title">📈 Pemasukan Bulanan</h3>
+      <canvas id="incomeChart" height="140"></canvas>
+    </div>
+
+    <div class="chart-box">
+      <h3 class="chart-title">💳 Cash vs QRIS</h3>
+      <canvas id="paymentChart" height="140"></canvas>
+    </div>
+
+    <div class="chart-box">
+      <h3 class="chart-title">📅 Pemasukan Harian</h3>
+      <canvas id="dailyChart" height="140"></canvas>
+    </div>
+
+    <div class="chart-box">
+      <h3 class="chart-title">📊 Pemasukan Mingguan</h3>
+      <canvas id="weeklyChart" height="140"></canvas>
+    </div>
+
+  </section>
 
 </main>
 
+<!-- SCRIPT -->
 <script src="assets/js/admin.js"></script>
 
+<!-- STYLE -->
 <style>
 .card{
-  background:white;
-  padding:16px;
-  border-radius:16px;
-  box-shadow:0 4px 12px rgba(0,0,0,.08);
+  background:#ffffff;
+  padding:18px;
+  border-radius:18px;
+  box-shadow:0 6px 18px rgba(0,0,0,.08);
 }
-.card h2{font-size:1.8rem;font-weight:700}
+.card h2{
+  font-size:1.9rem;
+  font-weight:800;
+  margin-top:6px;
+}
+.label{
+  font-size:.75rem;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  color:#6b7280;
+}
+
 .chart-box{
-  background:white;
-  padding:16px;
-  border-radius:16px;
-  box-shadow:0 4px 12px rgba(0,0,0,.08);
+  background:#ffffff;
+  padding:18px;
+  border-radius:18px;
+  box-shadow:0 6px 18px rgba(0,0,0,.08);
+}
+.chart-title{
+  font-size:.95rem;
+  font-weight:700;
+  margin-bottom:10px;
 }
 </style>
 

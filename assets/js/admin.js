@@ -1,4 +1,3 @@
-<script>
 /*************************************************
  * CONFIG
  *************************************************/
@@ -6,19 +5,15 @@ const API_URL = "PASTE_URL_GAS_KAMU_DI_SINI";
 const API_KEY = "LABFITNESS_2026_SECURE";
 
 /*************************************************
- * HELPER FETCH
+ * FETCH HELPER
  *************************************************/
 async function apiFetch(params = {}) {
-  const query = new URLSearchParams({
-    ...params,
-    key: API_KEY
-  }).toString();
-
-  const res = await fetch(`${API_URL}?${query}`);
+  const q = new URLSearchParams({ key: API_KEY, ...params }).toString();
+  const res = await fetch(`${API_URL}?${q}`);
   const data = await res.json();
 
   if (data.status !== "success") {
-    throw new Error(data.message || "API Error");
+    throw new Error(data.message || "API error");
   }
   return data;
 }
@@ -29,95 +24,134 @@ async function apiFetch(params = {}) {
 document.addEventListener("DOMContentLoaded", () => {
   loadDashboard();
   loadIncomeChart();
+  loadDailyChart();
+  loadWeeklyChart();
+  loadPaymentChart();
 });
 
 /*************************************************
- * LOAD DASHBOARD
+ * DASHBOARD KPI
  *************************************************/
 async function loadDashboard() {
   try {
-    showSkeleton(true);
+    const d = await apiFetch({ action: "adminDashboard", role: "admin" });
 
-    const data = await apiFetch({
-      action: "adminDashboard",
-      role: "admin"
-    });
+    setText("total", d.total_member);
+    setText("aktif", d.member_aktif);
+    setText("expired", d.member_tidak_aktif);
+    setCurrency("income", d.total_income);
 
-    console.log("ADMIN DASHBOARD:", data);
-
-    setText("total", data.total_member);
-    setText("aktif", data.member_aktif);
-    setText("expired", data.member_tidak_aktif);
-    setCurrency("income", data.total_income);
-
-  } catch (err) {
-    console.error(err);
-    alert("Gagal memuat dashboard admin");
-  } finally {
-    showSkeleton(false);
+  } catch (e) {
+    console.error(e);
+    alert("Gagal memuat dashboard");
   }
 }
 
 /*************************************************
- * LOAD INCOME CHART
+ * INCOME (MONTHLY)
  *************************************************/
 async function loadIncomeChart() {
   try {
-    const data = await apiFetch({
-      action: "adminIncomeChart",
-      role: "admin"
-    });
-
-    renderIncomeChart(data.labels, data.values);
-
-  } catch (err) {
-    console.error(err);
+    const d = await apiFetch({ action: "adminIncomeChart", role: "admin" });
+    renderLine("incomeChart", d.labels, d.values, "Pemasukan Bulanan");
+  } catch (e) {
+    console.error(e);
   }
 }
 
 /*************************************************
- * RENDER CHART (Chart.js)
+ * DAILY
  *************************************************/
-function renderIncomeChart(labels = [], values = []) {
-  const ctx = document.getElementById("incomeChart");
+async function loadDailyChart() {
+  try {
+    const d = await apiFetch({ action: "adminDailyChart", role: "admin" });
+    renderLine("dailyChart", d.labels, d.values, "Pemasukan Harian");
+  } catch (e) {
+    console.error(e);
+  }
+}
 
-  if (!ctx) return;
+/*************************************************
+ * WEEKLY
+ *************************************************/
+async function loadWeeklyChart() {
+  try {
+    const d = await apiFetch({ action: "adminWeeklyChart", role: "admin" });
+    renderBar("weeklyChart", d.labels, d.values, "Pemasukan Mingguan");
+  } catch (e) {
+    console.error(e);
+  }
+}
 
-  new Chart(ctx, {
+/*************************************************
+ * PAYMENT PIE
+ *************************************************/
+async function loadPaymentChart() {
+  try {
+    const d = await apiFetch({ action: "adminPaymentPie", role: "admin" });
+    renderPie("paymentChart", d.labels, d.values);
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+/*************************************************
+ * CHART RENDERERS
+ *************************************************/
+function renderLine(id, labels = [], values = [], label = "") {
+  const el = document.getElementById(id);
+  if (!el) return;
+
+  new Chart(el, {
     type: "line",
     data: {
       labels,
       datasets: [{
-        label: "Pemasukan",
+        label,
         data: values,
-        tension: 0.4
+        tension: 0.4,
+        fill: true
       }]
     },
     options: {
       responsive: true,
-      plugins: {
-        legend: { display: false }
-      }
+      plugins: { legend: { display: false } }
     }
   });
 }
 
-/*************************************************
- * EXPORT PDF
- *************************************************/
-async function exportPDF() {
-  try {
-    const data = await apiFetch({
-      action: "exportPDF",
-      role: "admin"
-    });
+function renderBar(id, labels = [], values = [], label = "") {
+  const el = document.getElementById(id);
+  if (!el) return;
 
-    window.open(data.pdf_url, "_blank");
+  new Chart(el, {
+    type: "bar",
+    data: {
+      labels,
+      datasets: [{
+        label,
+        data: values
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { display: false } }
+    }
+  });
+}
 
-  } catch (err) {
-    console.error(err);
-    alert("Gagal export PDF");
-  }
+function renderPie(id, labels = [], values = []) {
+  const el = document.getElementById(id);
+  if (!el) return;
+
+  new Chart(el, {
+    type: "pie",
+    data: {
+      labels,
+      datasets: [{ data: values }]
+    },
+    options: { responsive: true }
+  });
 }
 
 /*************************************************
@@ -126,31 +160,23 @@ async function exportPDF() {
 function setText(id, value) {
   const el = document.getElementById(id);
   if (!el) return;
-
   el.textContent =
-    typeof value === "number"
-      ? value.toLocaleString("id-ID")
-      : value || "-";
+    typeof value === "number" ? value.toLocaleString("id-ID") : value || "-";
 }
 
 function setCurrency(id, value) {
   const el = document.getElementById(id);
   if (!el) return;
-
   el.textContent =
     typeof value === "number"
       ? "Rp " + value.toLocaleString("id-ID")
       : "Rp 0";
 }
 
-function showSkeleton(show) {
-  document
-    .querySelectorAll(".skeleton")
-    .forEach(el => el.classList.toggle("hidden", !show));
-
-  document
-    .querySelectorAll(".real-content")
-    .forEach(el => el.classList.toggle("hidden", show));
+/*************************************************
+ * LOGOUT
+ *************************************************/
+function logout() {
+  localStorage.clear();
+  location.href = "index.html";
 }
-</script>
-

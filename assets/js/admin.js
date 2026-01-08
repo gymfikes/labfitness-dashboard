@@ -27,6 +27,7 @@ document.addEventListener("DOMContentLoaded", () => {
   loadDailyChart();
   loadWeeklyChart();
   loadPaymentChart();
+  loadInsight();
 });
 
 /*************************************************
@@ -153,6 +154,30 @@ function renderPie(id, labels = [], values = []) {
     options: { responsive: true }
   });
 }
+
+/*************************************************
+ * LOAD INSIGHT
+ *************************************************/
+async function loadInsight() {
+  try {
+    const d = await apiFetch({ action: "adminInsight", role: "admin" });
+
+    const ul = document.getElementById("insightList");
+    if (!ul) return;
+
+    ul.innerHTML = "";
+
+    d.insight.forEach(text => {
+      const li = document.createElement("li");
+      li.textContent = "• " + text;
+      ul.appendChild(li);
+    });
+
+  } catch (e) {
+    console.error("Insight error:", e);
+  }
+}
+
 
 /*************************************************
  * UI HELPERS

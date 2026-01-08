@@ -1,7 +1,7 @@
 /*************************************************
  * CONFIG
  *************************************************/
-const API_URL = "PASTE_URL_GAS_KAMU_DI_SINI";
+const API_URL = "https://script.google.com/macros/s/AKfycbzVS9DZ6SdoZ5o5-ODUnKOWGh-JstZ9_6HfE4UTsDZetFJt2GkNtULY3dChn17c7yhb/exec";
 const API_KEY = "LABFITNESS_2026_SECURE";
 
 /*************************************************

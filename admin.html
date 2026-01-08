@@ -52,10 +52,13 @@
 
   </section>
 
-  <!-- INSIGHT -->
+  <!-- INSIGHT (DOM SUDAH BENAR & TUNGGAL) -->
   <section class="card">
     <h3 class="text-sm font-bold mb-2">🧠 Insight Otomatis</h3>
-    <ul id="insightList" class="text-sm text-gray-700 space-y-1">
+    <ul
+      id="insightList"
+      class="text-sm text-gray-700 space-y-1 list-disc list-inside"
+    >
       <li>Memuat insight...</li>
     </ul>
   </section>
@@ -63,26 +66,29 @@
   <!-- CHARTS -->
   <section class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
+    <!-- MONTHLY -->
     <div class="chart-box">
       <h3 class="chart-title">📈 Pemasukan Bulanan</h3>
       <canvas id="incomeChart" height="140"></canvas>
     </div>
 
-    <!-- PIE (COMPACT) -->
+    <!-- PIE (FIXED SIZE - TIDAK BISA BESAR) -->
     <div class="chart-box flex flex-col items-center">
       <h3 class="chart-title self-start">💳 Cash vs QRIS</h3>
-      <canvas
-        id="paymentChart"
-        class="max-w-[260px] max-h-[260px]"
-        style="height:260px;width:260px">
-      </canvas>
+
+      <!-- SIZE LOCK -->
+      <div style="width:220px;height:220px">
+        <canvas id="paymentChart"></canvas>
+      </div>
     </div>
 
+    <!-- DAILY -->
     <div class="chart-box">
       <h3 class="chart-title">📅 Pemasukan Harian</h3>
       <canvas id="dailyChart" height="140"></canvas>
     </div>
 
+    <!-- WEEKLY -->
     <div class="chart-box">
       <h3 class="chart-title">📊 Pemasukan Mingguan</h3>
       <canvas id="weeklyChart" height="140"></canvas>
@@ -133,4 +139,3 @@
 
 </body>
 </html>
-

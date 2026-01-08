@@ -1,68 +1,75 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Dashboard | Lab Fitness</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Dashboard | Lab Fitness</title>
 
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 </head>
-
 <body class="bg-gray-100 min-h-screen">
 
-<!-- HEADER -->
 <header class="bg-black text-white px-4 py-3 flex justify-between items-center">
-  <h1 class="text-lg font-bold">Lab Fitness — Admin</h1>
+  <h1 class="text-lg font-bold">Lab Fitness — Admin Dashboard</h1>
   <button onclick="logout()" class="text-sm hover:underline">Logout</button>
 </header>
 
-<!-- MAIN -->
-<main class="p-4 space-y-6 max-w-7xl mx-auto">
+<main class="p-4 max-w-7xl mx-auto space-y-6">
 
-  <!-- KPI CARDS -->
-  <section class="grid grid-cols-2 md:grid-cols-4 gap-4">
+<!-- KPI -->
+<section class="grid grid-cols-2 md:grid-cols-4 gap-4">
+  <div class="card"><p>Total Member</p><h2 id="total">—</h2></div>
+  <div class="card"><p>Aktif</p><h2 id="aktif" class="text-green-600">—</h2></div>
+  <div class="card"><p>Tidak Aktif</p><h2 id="expired" class="text-red-500">—</h2></div>
+  <div class="card"><p>Pemasukan Bulan Ini</p><h2 id="income">—</h2></div>
+</section>
 
-    <div class="bg-white rounded-2xl p-4 shadow">
-      <p class="text-xs text-gray-500">Total Member</p>
-      <h2 id="total" class="text-3xl font-bold">0</h2>
-    </div>
+<!-- Charts -->
+<section class="grid grid-cols-1 md:grid-cols-2 gap-4">
 
-    <div class="bg-white rounded-2xl p-4 shadow">
-      <p class="text-xs text-gray-500">Member Aktif</p>
-      <h2 id="aktif" class="text-3xl font-bold text-green-600">0</h2>
-    </div>
+  <div class="chart-box">
+    <h3>Pemasukan Bulanan</h3>
+    <canvas id="incomeChart"></canvas>
+  </div>
 
-    <div class="bg-white rounded-2xl p-4 shadow">
-      <p class="text-xs text-gray-500">Member Tidak Aktif</p>
-      <h2 id="expired" class="text-3xl font-bold text-red-500">0</h2>
-    </div>
+  <div class="chart-box">
+    <h3>Cash vs QRIS</h3>
+    <canvas id="paymentChart"></canvas>
+  </div>
 
-    <div class="bg-white rounded-2xl p-4 shadow">
-      <p class="text-xs text-gray-500">Pendapatan</p>
-      <h2 id="income" class="text-2xl font-bold text-gray-900">Rp 0</h2>
-    </div>
+  <div class="chart-box">
+    <h3>Pemasukan Harian</h3>
+    <canvas id="dailyChart"></canvas>
+  </div>
 
-  </section>
+  <div class="chart-box">
+    <h3>Pemasukan Mingguan</h3>
+    <canvas id="weeklyChart"></canvas>
+  </div>
 
-  <!-- CHART -->
-  <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
-
-    <!-- MEMBER CHART PLACEHOLDER -->
-    <div class="bg-white p-4 rounded-2xl shadow flex items-center justify-center text-gray-400 text-sm">
-      📊 Chart Jumlah Member (Next Step)
-    </div>
-
-    <!-- INCOME CHART -->
-    <div class="bg-white p-4 rounded-2xl shadow">
-      <h3 class="font-semibold mb-2">Pendapatan Bulanan</h3>
-      <canvas id="incomeChart" height="150"></canvas>
-    </div>
-
-  </section>
+</section>
 
 </main>
 
 <script src="assets/js/admin.js"></script>
+
+<style>
+.card{
+  background:white;
+  padding:16px;
+  border-radius:16px;
+  box-shadow:0 4px 12px rgba(0,0,0,.08);
+}
+.card h2{font-size:1.8rem;font-weight:700}
+.chart-box{
+  background:white;
+  padding:16px;
+  border-radius:16px;
+  box-shadow:0 4px 12px rgba(0,0,0,.08);
+}
+</style>
+
 </body>
 </html>

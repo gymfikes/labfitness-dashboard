@@ -1,11 +1,167 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
-  <title>Program</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+<meta charset="UTF-8">
+<title>Pilih Program Latihan | Lab Fitness</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<meta name="description" content="Pilih program latihan Lab Fitness sesuai goal dan level kamu.">
+<meta name="robots" content="noindex, nofollow">
+
+<style>
+  body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: #f2f2f2;
+    margin: 0;
+    padding: 0;
+  }
+
+  .container {
+    max-width: 520px;
+    margin: 40px auto;
+    background: #ffffff;
+    border-radius: 14px;
+    padding: 24px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+  }
+
+  h1 {
+    font-size: 22px;
+    margin-bottom: 8px;
+  }
+
+  p {
+    color: #555;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  .section {
+    margin-top: 24px;
+  }
+
+  .section h3 {
+    font-size: 16px;
+    margin-bottom: 10px;
+  }
+
+  button {
+    width: 100%;
+    padding: 14px;
+    margin: 8px 0;
+    border: none;
+    border-radius: 10px;
+    background: #000;
+    color: #fff;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: opacity .2s;
+  }
+
+  button:hover {
+    opacity: .85;
+  }
+
+  button:disabled {
+    opacity: .5;
+    cursor: not-allowed;
+  }
+
+  .status {
+    margin-top: 16px;
+    font-size: 14px;
+    text-align: center;
+  }
+
+  .footer {
+    margin-top: 30px;
+    font-size: 12px;
+    color: #888;
+    text-align: center;
+  }
+</style>
 </head>
-<body class="p-6">
-  <h1 class="text-2xl font-bold">Program Lab Fitness</h1>
+
+<body>
+
+<div class="container">
+  <h1>💪 Pilih Program Latihan</h1>
+  <p>Silakan pilih goal dan level latihan kamu. Program akan langsung dikirim ke email terdaftar.</p>
+
+  <div class="section">
+    <h3>🔥 Fat Loss</h3>
+    <button onclick="sendProgram('fatloss','beginner')">Beginner</button>
+    <button onclick="sendProgram('fatloss','intermediate')">Intermediate</button>
+    <button onclick="sendProgram('fatloss','advanced')">Advanced</button>
+  </div>
+
+  <div class="section">
+    <h3>🏋️ Muscle Building</h3>
+    <button onclick="sendProgram('muscle','beginner')">Beginner</button>
+    <button onclick="sendProgram('muscle','intermediate')">Intermediate</button>
+    <button onclick="sendProgram('muscle','advanced')">Advanced</button>
+  </div>
+
+  <div id="status" class="status"></div>
+
+  <div class="footer">
+    Lab Fitness © 2026
+  </div>
+</div>
+
+<script>
+/* ==============================
+   CONFIG
+================================ */
+const API_URL = "https://script.google.com/macros/s/AKfycbzVS9DZ6SdoZ5o5-ODUnKOWGh-JstZ9_6HfE4UTsDZetFJt2GkNtULY3dChn17c7yhb/exec"; 
+// ⬆️ ISI NANTI DENGAN URL API APPS SCRIPT
+
+const params = new URLSearchParams(window.location.search);
+const kode = params.get("kode");
+
+const statusEl = document.getElementById("status");
+const buttons = document.querySelectorAll("button");
+
+if (!kode) {
+  statusEl.innerHTML = "❌ Kode member tidak valid.";
+  disableButtons();
+}
+
+/* ==============================
+   FUNCTIONS
+================================ */
+function disableButtons() {
+  buttons.forEach(btn => btn.disabled = true);
+}
+
+function sendProgram(goal, level) {
+
+  if (!kode) return;
+
+  disableButtons();
+  statusEl.innerHTML = "⏳ Mengirim program ke email kamu...";
+
+  fetch(API_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      kode: kode,
+      goal: goal,
+      level: level
+    })
+  })
+  .then(res => res.json())
+  .then(data => {
+    statusEl.innerHTML = "✅ Program berhasil dikirim. Silakan cek email kamu.";
+  })
+  .catch(err => {
+    console.error(err);
+    statusEl.innerHTML = "❌ Terjadi kesalahan. Silakan coba lagi.";
+    buttons.forEach(btn => btn.disabled = false);
+  });
+}
+</script>
+
 </body>
 </html>
-
